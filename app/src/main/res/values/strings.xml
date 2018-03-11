@@ -1,0 +1,70 @@
+<resources>
+    <string name="app_name">My Talks</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!--Navigation drawer-->
+    <string name="action_settings">Settings</string>
+    <string name="item_sms">Messages</string>
+    <string name="item_calls">Calls</string>
+    <string name="item_home">Home</string>
+    <string name="item_map">Map</string>
+    <string name="item_settings">Settings</string>
+    <string name="item_preferences">Preferences</string>
+    <string name="item_help">Help</string>
+    <string name="item_data">Data</string>
+
+    <string name="title_activity_maps">Map</string>
+
+    <!--Fragment Home-->
+    <string name="tv_lineOneNumber">Number</string>
+    <string name="tv_standardNumber">+55 (31) 9 9999–1234</string>
+    <string name="tv_callsLabel">Calls</string>
+    <string name="tv_smsLabel">Messages</string>
+    <string name="tv_numberOfCalls">32</string>
+    <string name="tv_numberOfsms">12</string>
+    <string name="tv_resume">Resume</string>
+    <string name="tv_wifiConnect">Wifi: </string>
+    <string name="tv_wifiConnected">Conected</string>
+    <string name="tv_home_LBL_WifiName">Network Name:</string>
+    <string name="tv_home_Status_wifiName">eduroam</string>
+    <string name="tv_home_LBL_dataStatus">Data Package:</string>
+    <string name="tv_home_LBL_dataConnected">Disconected</string>
+    <string name="tv_home_LBL_dataSignal">Signal Quality:</string>
+    <string name="tv_home_LBL_dataSignalStatus">Good</string>
+    <string name="tv_home_LBL_wifiHotspots">Nerby Networks:</string>
+    <string name="tv_home_LBL_wifiNumberHotspots">2</string>
+
+
+    <string name="tv_data_lbl_signalquality">Signal Quality</string>
+    <string name="tv_data_lbl_dadosUsados">Data Package</string>
+    <string name="tv_data_pacoteBase">0GB</string>
+    <string name="tv_data_pacoteMax">2GB</string>
+    <string name="tv_data_lbl_usado">Used Package:</string>
+    <string name="tv_data_usado">1.5GB</string>
+    <string name="tv_data_lbl_restante">Package Left:</string>
+    <string name="tv_data_restante">500MB</string>
+    <string name="tv_data_lbl_apps">Use per Application:</string>
+    <string name="eu">Myself</string>
+    <string name="tv_call_enviados">Made Calls</string>
+    <string name="tv_call_recebidos">Recieved Calls</string>
+    <string name="tv_call_listname">Calls</string>
+    <string name="tv_sms_enviados">Made Messages</string>
+    <string name="tv_sms_recebidos">Recieved Messages</string>
+    <string name="tv_sms_listname">Messages</string>
+    <string name="tv_sms_item_local">PUC Minas</string>
+    <string name="tv_sms_item_sms">Messages</string>
+    <string name="tv_sms_item_to">To:</string>
+    <string name="tv_sms_item_origin">Myself</string>
+    <string name="tv_sms_item_target">Humberto</string>
+    <string name="tv_sms_item_from">From:</string>
+    <string name="tv_sms_item_fromNumber">Myself</string>
+    <string name="tv_call_item_from">From:</string>
+    <string name="tv_call_item_origin">Igor</string>
+    <string name="tv_call_item_to">To:</string>
+    <string name="tv_call_item_target">Myself</string>
+    <string name="tv_call_item_address">Puc Minas</string>
+    <string name="tv_call_item_itime">20:40</string>
+    <string name="tv_call_item_ftime">- 20:45</string>
+</resources>

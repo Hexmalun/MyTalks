@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/home_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--Layout Ligações e Mensagens-->
+    <LinearLayout
+        android:layout_marginTop="8dp"
+        android:id="@+id/ll_home_callsAndSms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_marginLeft="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tv_callsLabel"
+                android:textSize="16sp"/>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cv_home_callClick"
+                android:clickable="true"
+                android:layout_width="match_parent"
+                android:layout_margin="8dp"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tv_numberOfCalls"
+                    android:textSize="40sp"/>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_marginLeft="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tv_smsLabel"
+                android:textSize="16sp"/>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cv_home_sms"
+                android:clickable="true"
+                android:layout_width="match_parent"
+                android:layout_margin="8dp"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tv_numberOfsms"
+                    android:textSize="40sp"/>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <!--Layout Uso de Dados-->
+    <TextView
+        android:id="@+id/tv_home_dataUsage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_below="@id/ll_home_callsAndSms"
+        android:text="Uso de Dados"
+        android:textSize="16sp"/>
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_home_dataUsage"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_home_dataUsage">
+
+        <LinearLayout
+            android:id="@+id/ll_home_cvLayout"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_home_minData"
+                android:layout_margin="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0Mb"/>
+            <ProgressBar
+                android:id="@+id/pb_home_dataUsage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/CustomProgressBarHorizontal" />
+
+            <TextView
+                android:id="@+id/tv_home_maxData"
+                android:layout_margin="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2GB"/>
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+    <!--Layout Resumo-->
+    <LinearLayout
+        android:layout_below="@id/cv_home_dataUsage"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_resume"
+            android:layout_marginLeft="16dp"
+            android:textSize="16sp" />
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_margin="8dp"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="match_parent">
+                <!--Layout Wifi-->
+                <LinearLayout
+                    android:layout_margin="8dp"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_marginRight="8dp"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_home_wifi"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tv_wifiConnect"/>
+                            <TextView
+                                android:id="@+id/tv_home_wifiStateConnected"
+                                android:layout_width="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tv_wifiConnected"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_gravity="center"
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tv_home_LBL_WifiName"/>
+                            <TextView
+                                android:id="@+id/tv_home_wifiName"
+                                android:layout_width="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tv_home_Status_wifiName"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tv_home_LBL_wifiHotspots"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tv_home_LBL_wifiNumberHotspots"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+                <!--Layout Pacode de Dados-->
+                <LinearLayout
+                    android:layout_margin="8dp"
+                    android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_marginRight="8dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_home_data"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tv_home_LBL_dataStatus"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tv_home_LBL_dataConnected"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tv_home_LBL_dataSignal"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tv_home_LBL_dataSignalStatus"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+</RelativeLayout>
