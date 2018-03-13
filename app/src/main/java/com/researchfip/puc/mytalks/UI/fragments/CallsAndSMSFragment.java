@@ -143,16 +143,16 @@ public class CallsAndSMSFragment extends Fragment {
 
                     columns = new String[]{
                             DBPersistence.getColOriginName(),
-                            DBPersistence.getColOriginNumber(),
+                            //DBPersistence.getColOriginNumber(),
                             DBPersistence.getColTargetName(),
-                            DBPersistence.getColTargetNumber(),
+                            //DBPersistence.getColTargetNumber(),
                             DBPersistence.getColItime(),
                             DBPersistence.getColFtime(),
                             DBPersistence.getColAddress()};
                     to = new int[] {
                             R.id.tv_call_item_origin,
-                            R.id.tv_call_item_itime,
                             R.id.tv_call_item_target,
+                            R.id.tv_call_item_itime,
                             R.id.tv_call_item_ftime,
                             R.id.tv_call_item_address};
                 }
