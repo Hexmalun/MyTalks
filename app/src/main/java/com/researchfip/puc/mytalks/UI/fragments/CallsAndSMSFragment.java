@@ -1,6 +1,7 @@
 package com.researchfip.puc.mytalks.UI.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,10 +11,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.researchfip.puc.mytalks.R;
 import com.researchfip.puc.mytalks.database.DBPersistence;
 import com.researchfip.puc.mytalks.database.PhoneData;
@@ -43,6 +56,8 @@ public class CallsAndSMSFragment extends Fragment {
 
     private View view;
 
+    MapView mMapView;
+    private GoogleMap googleMap;
 
     @Nullable
     @Override
@@ -57,7 +72,51 @@ public class CallsAndSMSFragment extends Fragment {
         tvTypeEventRecebidosValue = (TextView) view.findViewById(R.id.tv_typeEvent_recebidos_valor);
         tvTypeEventListName = (TextView) view.findViewById(R.id.tv_typeevent_listname);
         rvTypeEventList = (ListView) view.findViewById(R.id.lv_typevent_list);
+        rvTypeEventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                Log.d("Clicou:  ",persistence.getTableAsString());
+                final Dialog dialog = new Dialog(getActivity());
 
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                /////make map clear
+                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+
+                dialog.setContentView(R.layout.dialogmap);////your custom content
+
+                MapView mMapView = (MapView) dialog.findViewById(R.id.mapView);
+                MapsInitializer.initialize(getActivity());
+
+                mMapView.onCreate(dialog.onSaveInstanceState());
+                mMapView.onResume();
+
+
+                mMapView.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(final GoogleMap googleMap) {
+                        LatLng posisiabsen = new LatLng(2, 3); ////your lat lng
+                        googleMap.addMarker(new MarkerOptions().position(posisiabsen).title("Yout title"));
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(posisiabsen));
+                        googleMap.getUiSettings().setZoomControlsEnabled(true);
+                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+                    }
+                });
+
+
+                Button dialogButton = (Button) dialog.findViewById(R.id.button2);
+// if button is clicked, close the custom dialog
+                dialogButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
+
+            }
+        });
         if(typeService == PhoneInformation.SMS_SERVICE_ID){
             tvTypeEventEnviados.setText(getString(R.string.tv_sms_enviados));
             tvTypeEventRecebidos.setText(getString(R.string.tv_sms_recebidos));
