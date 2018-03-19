@@ -17,6 +17,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -59,13 +60,15 @@ public class MapFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
-                 // For dropping a marker at a point on the Map
-                LatLng sydney = new LatLng(3, 2);
-                googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
-                Log.d("MapCreated", " Aqui");
-                // For zooming automatically to the location of the marker
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                LatLng posisiabsen1 = new LatLng(-19.921603, -43.939367); ////your lat lng
+                LatLng posisiabsen2 = new LatLng(-19.927503, -43.948980); ////your lat lng
+                googleMap.addMarker(new MarkerOptions().position(posisiabsen1).title("Yout title")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(posisiabsen1));
+                googleMap.getUiSettings().setZoomControlsEnabled(true);
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+                googleMap.addMarker(new MarkerOptions().position(posisiabsen2).title("Yout title")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
             }
         });
 

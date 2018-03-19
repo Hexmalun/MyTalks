@@ -3,6 +3,7 @@ package com.researchfip.puc.mytalks.UI.fragments;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,13 +25,26 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.model.DirectionsLeg;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.DirectionsStep;
+import com.google.maps.model.EncodedPolyline;
 import com.researchfip.puc.mytalks.R;
 import com.researchfip.puc.mytalks.database.DBPersistence;
 import com.researchfip.puc.mytalks.database.PhoneData;
 import com.researchfip.puc.mytalks.general.PhoneInformation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by joaocastro on 06/12/17.
@@ -95,17 +109,95 @@ public class CallsAndSMSFragment extends Fragment {
                 mMapView.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(final GoogleMap googleMap) {
-                        LatLng posisiabsen = new LatLng(2, 3); ////your lat lng
-                        googleMap.addMarker(new MarkerOptions().position(posisiabsen).title("Yout title"));
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(posisiabsen));
+                        LatLng posisiabsen1 = new LatLng(-19.921603, -43.939367); ////your lat lng
+                        LatLng posisiabsen2 = new LatLng(-19.927503, -43.948980); ////your lat lng
+                        googleMap.addMarker(new MarkerOptions().position(posisiabsen1).title("Yout title")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(posisiabsen1));
                         googleMap.getUiSettings().setZoomControlsEnabled(true);
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+                        googleMap.addMarker(new MarkerOptions().position(posisiabsen2).title("Yout title")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+
+
+                        googleMap.addMarker(new MarkerOptions().position(new LatLng(-19.921936, -43.948068)).title("Yout title")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        googleMap.addMarker(new MarkerOptions().position(new LatLng(-19.921936, -43.948068)).title("Yout title")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        googleMap.addMarker(new MarkerOptions().position(new LatLng(-19.925526, -43.939721)).title("Yout title")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        googleMap.addMarker(new MarkerOptions().position(new LatLng(-19.923751, -43.946609)).title("Yout title")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        googleMap.addMarker(new MarkerOptions().position(new LatLng(-19.920160, -43.945193)).title("Yout title")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        googleMap.addMarker(new MarkerOptions().position(new LatLng(-19.926152, -43.952918)).title("Yout title")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+
+
+                        List<LatLng> path = new ArrayList();
+
+
+                        //Execute Directions API request
+                        GeoApiContext context = new GeoApiContext.Builder()
+                                .apiKey("AIzaSyDmv0DLyHsiEhMbFqQMAKs_TIOn-sXNNpc")
+                                .build();
+                        DirectionsApiRequest req = DirectionsApi.getDirections(context, "-19.921603, -43.939367", "-19.927503, -43.948980");
+                        try {
+                            DirectionsResult res = req.await();
+
+                            //Loop through legs and steps to get encoded polylines of each step
+                            if (res.routes != null && res.routes.length > 0) {
+                                DirectionsRoute route = res.routes[0];
+
+                                if (route.legs !=null) {
+                                    for(int i=0; i<route.legs.length; i++) {
+                                        DirectionsLeg leg = route.legs[i];
+                                        if (leg.steps != null) {
+                                            for (int j=0; j<leg.steps.length;j++){
+                                                DirectionsStep step = leg.steps[j];
+                                                if (step.steps != null && step.steps.length >0) {
+                                                    for (int k=0; k<step.steps.length;k++){
+                                                        DirectionsStep step1 = step.steps[k];
+                                                        EncodedPolyline points1 = step1.polyline;
+                                                        if (points1 != null) {
+                                                            //Decode polyline and add points to list of route coordinates
+                                                            List<com.google.maps.model.LatLng> coords1 = points1.decodePath();
+                                                            for (com.google.maps.model.LatLng coord1 : coords1) {
+                                                                path.add(new LatLng(coord1.lat, coord1.lng));
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    EncodedPolyline points = step.polyline;
+                                                    if (points != null) {
+                                                        //Decode polyline and add points to list of route coordinates
+                                                        List<com.google.maps.model.LatLng> coords = points.decodePath();
+                                                        for (com.google.maps.model.LatLng coord : coords) {
+                                                            path.add(new LatLng(coord.lat, coord.lng));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } catch(Exception ex) {
+                            Log.e("Erro", ex.getLocalizedMessage());
+                        }
+
+                        //Draw the polyline
+                        if (path.size() > 0) {
+                            PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
+                            googleMap.addPolyline(opts);
+                        }
+
                     }
                 });
 
 
                 Button dialogButton = (Button) dialog.findViewById(R.id.button2);
-// if button is clicked, close the custom dialog
+                // if button is clicked, close the custom dialog
                 dialogButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

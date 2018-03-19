@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -35,7 +38,6 @@ import static android.content.Context.TELEPHONY_SERVICE;
 
 public class HomeFragment extends Fragment {
 
-    PhoneInformation phoneInformation;
 
 
     @Override
@@ -50,6 +52,7 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
         return view;
     }
+
 
 
 }

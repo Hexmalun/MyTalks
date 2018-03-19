@@ -141,6 +141,24 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public void onClickHandlercall(View v) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("TYPE_EVENT", PhoneInformation.CALL_SERVICE_ID);
+        fragment = new CallsAndSMSFragment();
+        fragment.setArguments(bundle);
+        ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content_main, fragment);
+        ft.commit();
+    }
 
+    public void onClickHandlersms(View v) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("TYPE_EVENT", PhoneInformation.SMS_SERVICE_ID);
+        fragment = new CallsAndSMSFragment();
+        fragment.setArguments(bundle);
+        ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content_main, fragment);
+        ft.commit();
+    }
 
 }
