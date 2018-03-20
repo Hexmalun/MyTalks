@@ -90,7 +90,7 @@ public class CallsAndSMSFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                Log.d("Clicou:  ",persistence.getTableAsString());
+             //   Log.d("Clicou:  ",persistence.getTableAsString());
                 final Dialog dialog = new Dialog(getActivity());
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -118,22 +118,6 @@ public class CallsAndSMSFragment extends Fragment {
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
                         googleMap.addMarker(new MarkerOptions().position(posisiabsen2).title("Yout title")
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-
-
-                        googleMap.addMarker(new MarkerOptions().position(new LatLng(-19.921936, -43.948068)).title("Yout title")
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                        googleMap.addMarker(new MarkerOptions().position(new LatLng(-19.921936, -43.948068)).title("Yout title")
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                        googleMap.addMarker(new MarkerOptions().position(new LatLng(-19.925526, -43.939721)).title("Yout title")
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                        googleMap.addMarker(new MarkerOptions().position(new LatLng(-19.923751, -43.946609)).title("Yout title")
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                        googleMap.addMarker(new MarkerOptions().position(new LatLng(-19.920160, -43.945193)).title("Yout title")
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                        googleMap.addMarker(new MarkerOptions().position(new LatLng(-19.926152, -43.952918)).title("Yout title")
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-
-
                         List<LatLng> path = new ArrayList();
 
 
@@ -245,7 +229,7 @@ public class CallsAndSMSFragment extends Fragment {
                 receivedAndSend[0]++;
             }
         }
-        Log.d("Table String",persistence.getTableAsString());
+      //  Log.d("Table String",persistence.getTableAsString());
         received = receivedAndSend[0];
         send = receivedAndSend[1];
     }
@@ -278,9 +262,9 @@ public class CallsAndSMSFragment extends Fragment {
                 if(typeService == PhoneInformation.SMS_SERVICE_ID){
                     columns = new String[]{
                             DBPersistence.getColOriginName(),
-                            DBPersistence.getColOriginNumber(),
+                           // DBPersistence.getColOriginNumber(),
                             DBPersistence.getColTargetName(),
-                            DBPersistence.getColTargetNumber(),
+                          //  DBPersistence.getColTargetNumber(),
                             DBPersistence.getColItime(),
                             DBPersistence.getColAddress()};
 
@@ -288,6 +272,7 @@ public class CallsAndSMSFragment extends Fragment {
                             R.id.tv_sms_item_target,
                             R.id.tv_sms_item_sms,
                             R.id.tv_sms_item_address};
+                    Log.d("SMS Origin",columns[0]);
                     adapter = new SimpleCursorAdapter(getActivity(),R.layout.sms_item,cursor,columns,to,0);
                     getReceivedAndSend(cursor);
                     } else if (typeService == PhoneInformation.CALL_SERVICE_ID){
@@ -306,9 +291,12 @@ public class CallsAndSMSFragment extends Fragment {
                             R.id.tv_call_item_itime,
                             R.id.tv_call_item_ftime,
                             R.id.tv_call_item_address};
-                }
-                adapter = new SimpleCursorAdapter(getActivity(), R.layout.call_item, cursor, columns, to, 0);
+                    Log.d("Calls Origin",columns[0]);
+                    adapter = new SimpleCursorAdapter(getActivity(), R.layout.call_item, cursor, columns, to, 0);
                     getReceivedAndSend(cursor);
+                }
+
+
             }
             return null;
         }
