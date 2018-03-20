@@ -127,6 +127,7 @@ public class CallEventManager {
                         timeLog[0] = pInfo.getDateTime();
                         timeLog[1] = pInfo.getDateTime();
                         coordinatesS = geo.getGeoCoordinates();
+                        coordinatesE = coordinatesS;
                         insertCall();
                         insertCall(coordinatesS,coordinatesE);
                     }
