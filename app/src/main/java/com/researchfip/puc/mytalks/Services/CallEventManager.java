@@ -10,6 +10,8 @@ import android.util.Log;
 
 import com.researchfip.puc.mytalks.R;
 import com.researchfip.puc.mytalks.database.PersistPhoneData;
+import com.researchfip.puc.mytalks.database.PersistPhoneData2;
+import com.researchfip.puc.mytalks.general.Geo;
 import com.researchfip.puc.mytalks.general.PhoneInformation;
 
 /**
@@ -74,17 +76,32 @@ public class CallEventManager {
         }
     }
 
+    public void insertCall(double [] cooS,double [] cooE){
+        Thread thread = new Thread(new PersistPhoneData2(context, originInfo, targetInfo, timeLog, typeEvent, typeService, cooS, cooE));
+        Log.d("CallEventManager", " " + originInfo[0] + " " +timeLog[0]);
+        thread.start();
+        try{
+            thread.join();
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+    }
+
 
 
     public class CallStateListener extends  PhoneStateListener {
         private boolean began = false;
         private boolean misscall = false;
-
+        private double[] coordinatesS;
+        private double[] coordinatesE;
+        Geo geo = new Geo(context);
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
             if(state == TelephonyManager.CALL_STATE_OFFHOOK && !began){
                 began = true;
                 timeLog[0] = pInfo.getDateTime();
+                coordinatesS = geo.getGeoCoordinates();
+
             }
             Log.d("CallState","Entrei aqui");
 
@@ -92,7 +109,7 @@ public class CallEventManager {
                 case TelephonyManager.CALL_STATE_RINGING:
                     typeEvent = pInfo.getIncomingEventId();
                     targetInfo[0] = pInfo.getPhoneNumber();
-                    targetInfo[1] = "Eu";
+                    targetInfo[1] = "MySelf";
                     originInfo[0] = incomingNumber;
                     originInfo[1] = pInfo.getContactName(context, originInfo[0]);
                     misscall = true;
@@ -103,11 +120,15 @@ public class CallEventManager {
                         began = false;
                         Log.d("CallState","began if");
                         timeLog[1] = pInfo.getDateTime();
+                        coordinatesE = geo.getGeoCoordinates();
                         insertCall();
+                        insertCall(coordinatesS,coordinatesE);
                     }else if(misscall && !began){
                         timeLog[0] = pInfo.getDateTime();
                         timeLog[1] = pInfo.getDateTime();
+                        coordinatesS = geo.getGeoCoordinates();
                         insertCall();
+                        insertCall(coordinatesS,coordinatesE);
                     }
                     break;
             }
