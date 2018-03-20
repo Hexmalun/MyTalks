@@ -92,7 +92,9 @@ public class CallsAndSMSFragment extends Fragment {
                                     long id) {
              //   Log.d("Clicou:  ",persistence.getTableAsString());
                 final Dialog dialog = new Dialog(getActivity());
-
+                final Cursor c = (Cursor)(rvTypeEventList.getItemAtPosition(position));
+                String num = c.getColumnName(8)+ "  "+ c.getString(8) +c.getColumnName(9)+"   "+ c.getString(9);
+                Log.d("Clicou:  ",num);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 /////make map clear
                 dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -109,14 +111,14 @@ public class CallsAndSMSFragment extends Fragment {
                 mMapView.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(final GoogleMap googleMap) {
-                        LatLng posisiabsen1 = new LatLng(-19.921603, -43.939367); ////your lat lng
-                        LatLng posisiabsen2 = new LatLng(-19.927503, -43.948980); ////your lat lng
+                        LatLng posisiabsen1 = new LatLng( Double.parseDouble(c.getString(8)), Double.parseDouble(c.getString(9))); ////your lat lng
+                      //  LatLng posisiabsen2 = new LatLng(-19.927503, -43.948980); ////your lat lng
                         googleMap.addMarker(new MarkerOptions().position(posisiabsen1).title("Yout title")
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
                         googleMap.moveCamera(CameraUpdateFactory.newLatLng(posisiabsen1));
                         googleMap.getUiSettings().setZoomControlsEnabled(true);
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
-                        googleMap.addMarker(new MarkerOptions().position(posisiabsen2).title("Yout title")
+                     /*   googleMap.addMarker(new MarkerOptions().position(posisiabsen2).title("Yout title")
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
                         List<LatLng> path = new ArrayList();
 
@@ -174,7 +176,7 @@ public class CallsAndSMSFragment extends Fragment {
                         if (path.size() > 0) {
                             PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
                             googleMap.addPolyline(opts);
-                        }
+                        }*/
 
                     }
                 });
@@ -255,7 +257,6 @@ public class CallsAndSMSFragment extends Fragment {
         protected String doInBackground(String... strings) {
             cursor = persistence.getPhoneDataToViews(typeService);
             if(cursor != null){
-
                 String[] columns = null;
                 int[] to = null;
 
