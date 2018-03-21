@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment {
             phoneData[i] = persistence.cursorToPhoneData(cursor);
             receivedAndSend++;
         }
-        Log.d("Table String",persistence.getTableAsString());
+        //Log.d("Table String",persistence.getTableAsString());
         sms = receivedAndSend;
     }
 
@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment {
             phoneData[i] = persistence.cursorToPhoneData(cursor);
             receivedAndSend++;
         }
-        Log.d("Table String",persistence.getTableAsString());
+        //Log.d("Table String",persistence.getTableAsString());
         calls = receivedAndSend;
     }
 

@@ -8,6 +8,8 @@ import android.os.Handler;
 
 import com.researchfip.puc.mytalks.R;
 import com.researchfip.puc.mytalks.database.PersistPhoneData;
+import com.researchfip.puc.mytalks.database.PersistPhoneData2;
+import com.researchfip.puc.mytalks.general.Geo;
 import com.researchfip.puc.mytalks.general.PhoneInformation;
 
 /**
@@ -53,6 +55,10 @@ public class OutgoingSMSReceiver extends ContentObserver {
     }
 
     private void insertSMS(){
+        Geo geo = new Geo(context);
+        double[] coordinatesS;
+        coordinatesS = geo.getGeoCoordinates();
+
         String[] timeLog = new String[2];
         timeLog[0] = pInfo.getDateTime();
         timeLog[1] = "";
@@ -70,6 +76,9 @@ public class OutgoingSMSReceiver extends ContentObserver {
 
         Thread thread = new Thread(new PersistPhoneData(context,originInfo,targetInfo, timeLog,typeEvent,typeService));
         thread.start();
+        Thread thread2 = new Thread(new PersistPhoneData2(context,originInfo, targetInfo, timeLog, typeEvent, typeService, coordinatesS,coordinatesS));
+        thread2.start();
+
         try{
             thread.join();
         }catch (InterruptedException e) {

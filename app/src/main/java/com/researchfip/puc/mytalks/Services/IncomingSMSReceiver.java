@@ -10,7 +10,9 @@ import android.util.Log;
 import com.researchfip.puc.mytalks.R;
 import com.researchfip.puc.mytalks.database.DBPersistence;
 import com.researchfip.puc.mytalks.database.PersistPhoneData;
+import com.researchfip.puc.mytalks.database.PersistPhoneData2;
 import com.researchfip.puc.mytalks.database.PhoneData;
+import com.researchfip.puc.mytalks.general.Geo;
 import com.researchfip.puc.mytalks.general.PhoneInformation;
 
 /**
@@ -55,7 +57,9 @@ public class IncomingSMSReceiver extends BroadcastReceiver {
 
 
     public void insertSMS(String originNumber){
-
+        Geo geo = new Geo(context);
+        double[] coordinatesS;
+        coordinatesS = geo.getGeoCoordinates();
         pInfo = new PhoneInformation(this.context);
 
         this.typeEvent = pInfo.getIncomingEventId();
@@ -77,6 +81,8 @@ public class IncomingSMSReceiver extends BroadcastReceiver {
 
         Thread thread = new Thread(new PersistPhoneData(context,originInfo, targetInfo, timeLog, typeEvent, typeService));
         thread.start();
+        Thread thread2 = new Thread(new PersistPhoneData2(context,originInfo, targetInfo, timeLog, typeEvent, typeService, coordinatesS,coordinatesS));
+        thread2.start();
         try{
             thread.join();
         }catch (InterruptedException e){

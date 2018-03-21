@@ -25,8 +25,8 @@ import android.util.Log;
 public class DBPersistence2 extends SQLiteOpenHelper {
 
     private static final int DB_VERSION = 5;
-    private static final String DB_NAME = "MyTalksv5.db";
-    private static final String TABLE_PHODAT = "phoneData";
+    private static final String DB_NAME = "MyTalksv6.db";
+    private static final String TABLE_PHODAT = "phoneData2";
     private static final String TABLE_CALLS = "calls";
     private static final String TABLE_SMS = "sms";
     //Commom Column Names
@@ -159,8 +159,8 @@ public class DBPersistence2 extends SQLiteOpenHelper {
         return (getIdLastPhoneData());
     }
 
-    public PhoneData getPhoneDataByID(String id, int typeService){
-        PhoneData phoneData;
+    public PhoneData2 getPhoneDataByID(String id, int typeService){
+        PhoneData2 phoneData;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PHODAT
                 + " WHERE " + COL_TYPE_SERVICE + " = " + typeService
@@ -188,12 +188,12 @@ public class DBPersistence2 extends SQLiteOpenHelper {
         return tableString;
     }
 
-    public PhoneData[] getPhoneDataToSynchronization(){
+    public PhoneData2[] getPhoneDataToSynchronization(){
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PHODAT
                 + " WHERE "  + COL_SYNCHRONIZED + "= 0",null);
-        PhoneData[] datas = new PhoneData[cursor.getCount()];
+        PhoneData2[] datas = new PhoneData2[cursor.getCount()];
         int position = 0;
         while(cursor.moveToNext()){
             datas[position]  = cursorToPhoneData(cursor);
@@ -313,21 +313,21 @@ public class DBPersistence2 extends SQLiteOpenHelper {
      * @return PhoneData or Null
      */
 
-    public PhoneData cursorToPhoneData(Cursor cursor){
-        PhoneData data = null;
+    public PhoneData2 cursorToPhoneData(Cursor cursor){
+        PhoneData2 data = null;
         if (cursor.getCount() != 0){
-            data = new PhoneData();
+            data = new PhoneData2();
             data.setId(cursor.getInt(NUM_COL_ID));
             data.setImei(cursor.getString(NUM_COL_IMEI));
             data.setOriginNumber(cursor.getString(NUM_COL_ORIGIN_NUMBER));
             data.setOriginName(cursor.getString(NUM_COL_ORIGIN_NAME));
             data.setTargetNumber(cursor.getString(NUM_COL_TARGET_NUMBER));
             data.setTargetName(cursor.getString(NUM_COL_TARGET_NAME));
-            data.setLatitude(cursor.getDouble(NUM_COL_LATITUDE_S));
-            data.setLongitude(cursor.getDouble(NUM_COL_LONGITUDE_S));
-            data.setAddress(cursor.getString(NUM_COL_ADDRESS_S));
-            data.setLatitude(cursor.getDouble(NUM_COL_LATITUDE_E));
-            data.setLongitude(cursor.getDouble(NUM_COL_LONGITUDE_E));
+            data.setLatitudeS(cursor.getDouble(NUM_COL_LATITUDE_S));
+            data.setLongitudeS(cursor.getDouble(NUM_COL_LONGITUDE_S));
+            data.setAddressS(cursor.getString(NUM_COL_ADDRESS_S));
+            data.setLatitudeE(cursor.getDouble(NUM_COL_LATITUDE_E));
+            data.setLongitudeE(cursor.getDouble(NUM_COL_LONGITUDE_E));
             data.setiTime(cursor.getString(NUM_COL_ITIME));
             data.setfTime(cursor.getString(NUM_COL_FTIME));
             data.setTypeEvent(cursor.getInt(NUM_COL_TYPE_EVENT));

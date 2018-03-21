@@ -28,6 +28,7 @@ import com.researchfip.puc.mytalks.R;
 import com.researchfip.puc.mytalks.Services.CallService;
 import com.researchfip.puc.mytalks.Services.SMSService;
 import com.researchfip.puc.mytalks.UI.fragments.CallsAndSMSFragment;
+import com.researchfip.puc.mytalks.UI.fragments.CallsAndSMSFragment2;
 import com.researchfip.puc.mytalks.UI.fragments.DataFragment;
 import com.researchfip.puc.mytalks.UI.fragments.HelpFragment;
 import com.researchfip.puc.mytalks.UI.fragments.HomeFragment;
@@ -90,7 +91,8 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_calls:
                 Bundle bundle = new Bundle();
                 bundle.putInt("TYPE_EVENT", PhoneInformation.CALL_SERVICE_ID);
-                fragment = new CallsAndSMSFragment();
+                //fragment = new CallsAndSMSFragment();
+                fragment = new CallsAndSMSFragment2();
                 fragment.setArguments(bundle);
                 ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_main, fragment);
@@ -99,7 +101,8 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_sms:
                 bundle = new Bundle();
                 bundle.putInt("TYPE_EVENT", PhoneInformation.SMS_SERVICE_ID);
-                fragment = new CallsAndSMSFragment();
+                //fragment = new CallsAndSMSFragment();
+                fragment = new CallsAndSMSFragment2();
                 fragment.setArguments(bundle);
                 ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_main, fragment);
@@ -144,7 +147,8 @@ public class MainActivity extends AppCompatActivity
     public void onClickHandlercall(View v) {
         Bundle bundle = new Bundle();
         bundle.putInt("TYPE_EVENT", PhoneInformation.CALL_SERVICE_ID);
-        fragment = new CallsAndSMSFragment();
+        //fragment = new CallsAndSMSFragment();
+        fragment = new CallsAndSMSFragment2();
         fragment.setArguments(bundle);
         ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_main, fragment);
@@ -154,7 +158,8 @@ public class MainActivity extends AppCompatActivity
     public void onClickHandlersms(View v) {
         Bundle bundle = new Bundle();
         bundle.putInt("TYPE_EVENT", PhoneInformation.SMS_SERVICE_ID);
-        fragment = new CallsAndSMSFragment();
+        fragment = new CallsAndSMSFragment2();
+        //fragment = new CallsAndSMSFragment();
         fragment.setArguments(bundle);
         ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_main, fragment);

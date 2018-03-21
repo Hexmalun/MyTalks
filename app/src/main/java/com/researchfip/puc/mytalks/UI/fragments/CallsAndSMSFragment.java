@@ -111,6 +111,7 @@ public class CallsAndSMSFragment extends Fragment {
                 mMapView.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(final GoogleMap googleMap) {
+
                         LatLng posisiabsen1 = new LatLng( Double.parseDouble(c.getString(8)), Double.parseDouble(c.getString(9))); ////your lat lng
                       //  LatLng posisiabsen2 = new LatLng(-19.927503, -43.948980); ////your lat lng
                         googleMap.addMarker(new MarkerOptions().position(posisiabsen1).title("Yout title")

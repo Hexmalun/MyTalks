@@ -1,6 +1,7 @@
 package com.researchfip.puc.mytalks.database;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.researchfip.puc.mytalks.general.Geo;
 import com.researchfip.puc.mytalks.general.PhoneInformation;
@@ -24,6 +25,8 @@ public class PersistPhoneData2 implements Runnable {
     public PersistPhoneData2(Context context, String[] originInfo, String[] targetInfo,
                              String[] timeLog, int typeEvent, int typeService, double [] cooS,double [] cooE){
         this.context = context;
+        Log.d("Saved ","sms");
+
         phoneInformation = new PhoneInformation(context);
         persistence = new DBPersistence2(context);
         geo = new Geo(context);
