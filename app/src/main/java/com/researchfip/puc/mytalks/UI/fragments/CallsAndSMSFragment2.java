@@ -97,7 +97,7 @@ public class CallsAndSMSFragment2 extends Fragment {
              //   Log.d("Clicou:  ",persistence.getTableAsString());
                 final Dialog dialog = new Dialog(getActivity());
                 final Cursor c = (Cursor)(rvTypeEventList.getItemAtPosition(position));
-                String num = c.getColumnName(8)+ "  "+ c.getString(8) +c.getColumnName(9)+"   "+ c.getString(9);
+                String num = c.getColumnName(11)+ "  "+ c.getString(11) +c.getColumnName(12)+"   "+ c.getString(12);
                 Log.d("Clicou:  ",num);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 /////make map clear
@@ -120,8 +120,8 @@ public class CallsAndSMSFragment2 extends Fragment {
                         double latE = 91;
                         double lonE = 181;
                         if(!c.getString(10).equals("")) {
-                            latE = Double.parseDouble(c.getString(10));
-                            lonE = Double.parseDouble(c.getString(11));
+                            latE = Double.parseDouble(c.getString(12));
+                            lonE = Double.parseDouble(c.getString(13));
                         }
                         if(latS == latE && lonS == lonE || latE == 91){
                             LatLng posisiabsen1 = new LatLng( Double.parseDouble(c.getString(8)), Double.parseDouble(c.getString(9))); ////your lat lng
