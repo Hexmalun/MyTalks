@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.researchfip.puc.mytalks.Services.CallService;
 import com.researchfip.puc.mytalks.Services.SMSService;
+import com.researchfip.puc.mytalks.Services.getMeasurements;
 import com.researchfip.puc.mytalks.UI.MainActivity;
 
 public class SplashActivity extends AppCompatActivity {
@@ -53,6 +54,11 @@ public class SplashActivity extends AppCompatActivity {
 
             if(!isCallServiceRunning()) {
                 serviceCall = new Intent(this, CallService.class);
+                startService(serviceCall);
+            }
+
+            if(!isGetMServiceRunning()) {
+                serviceCall = new Intent(this, getMeasurements.class);
                 startService(serviceCall);
             }
 
@@ -129,6 +135,16 @@ public class SplashActivity extends AppCompatActivity {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for(ActivityManager.RunningServiceInfo serviceInfo : manager.getRunningServices(Integer.MAX_VALUE)){
             if(CallService.class.getName().equals(serviceInfo.service.getClassName())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isGetMServiceRunning(){
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for(ActivityManager.RunningServiceInfo serviceInfo : manager.getRunningServices(Integer.MAX_VALUE)){
+            if(getMeasurements.class.getName().equals(serviceInfo.service.getClassName())){
                 return true;
             }
         }

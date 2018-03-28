@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Handler;
 
 import com.researchfip.puc.mytalks.R;
-import com.researchfip.puc.mytalks.database.PersistPhoneData;
 import com.researchfip.puc.mytalks.database.PersistPhoneData2;
 import com.researchfip.puc.mytalks.general.Geo;
 import com.researchfip.puc.mytalks.general.PhoneInformation;
@@ -74,13 +73,13 @@ public class OutgoingSMSReceiver extends ContentObserver {
             originInfo[1] = context.getString(R.string.eu);
         }
 
-        Thread thread = new Thread(new PersistPhoneData(context,originInfo,targetInfo, timeLog,typeEvent,typeService));
-        thread.start();
+        //Thread thread = new Thread(new PersistPhoneData1(context,originInfo,targetInfo, timeLog,typeEvent,typeService));
+       // thread.start();
         Thread thread2 = new Thread(new PersistPhoneData2(context,originInfo, targetInfo, timeLog, typeEvent, typeService, coordinatesS,coordinatesS));
         thread2.start();
 
         try{
-            thread.join();
+            thread2.join();
         }catch (InterruptedException e) {
             e.printStackTrace();
         }

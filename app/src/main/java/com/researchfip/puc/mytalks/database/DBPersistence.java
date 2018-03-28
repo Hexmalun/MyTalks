@@ -11,7 +11,7 @@ import android.util.Log;
  * Created by joaocastro on 06/12/17.
  */
 
-public class DBPersistence extends SQLiteOpenHelper{
+public class DBPersistence{}/* extends SQLiteOpenHelper{
 
     private static final int DB_VERSION = 5;
     private static final String DB_NAME = "MyTalksv5.db";
@@ -86,7 +86,7 @@ public class DBPersistence extends SQLiteOpenHelper{
     /**
      * onCreate Method that will be called to first create of DB
      * @param db
-     */
+     *
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_PHONE_DATA);
@@ -103,7 +103,7 @@ public class DBPersistence extends SQLiteOpenHelper{
 
     /**
      * Closing Database
-     */
+     *
     public void closeDB(){
         SQLiteDatabase db = this.getReadableDatabase();
         if(db != null && db.isOpen())
@@ -193,7 +193,7 @@ public class DBPersistence extends SQLiteOpenHelper{
      * This method is used to retrieve information to ListViews
      * @param typeService
      * @return
-     */
+     *
 
     public Cursor getPhoneDataToViews(int typeService){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -272,7 +272,7 @@ public class DBPersistence extends SQLiteOpenHelper{
     /**
      * Function to return the last phone data on db
      * @return int id
-     */
+     *
     private synchronized int getIdLastPhoneData(){
         SQLiteDatabase db = this.getWritableDatabase();
         int answer = -1;
@@ -289,7 +289,7 @@ public class DBPersistence extends SQLiteOpenHelper{
      * Method to convert Cursor to PhoneData
      * @param cursor  cursor
      * @return PhoneData or Null
-     */
+     *
 
     public PhoneData cursorToPhoneData(Cursor cursor){
         PhoneData data = null;
@@ -475,3 +475,4 @@ public class DBPersistence extends SQLiteOpenHelper{
         return CREATE_TABLE_PHONE_DATA;
     }
 }
+*/

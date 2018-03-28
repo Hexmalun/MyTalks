@@ -9,7 +9,7 @@ import com.researchfip.puc.mytalks.general.PhoneInformation;
  * Created by joaocastro on 06/12/17.
  */
 
-public class PersistPhoneData implements Runnable {
+public class PersistPhoneData1{ /*implements Runnable {
 
     Context context;
     PhoneInformation phoneInformation;
@@ -21,8 +21,8 @@ public class PersistPhoneData implements Runnable {
     boolean isShareAvailable; //this is private (Dont forget)
 
 
-    public PersistPhoneData(Context context, String[] originInfo, String[] targetInfo,
-                            String[] timeLog, int typeEvent, int typeService){
+    public PersistPhoneData1(Context context, String[] originInfo, String[] targetInfo,
+                             String[] timeLog, int typeEvent, int typeService){
         this.context = context;
         phoneInformation = new PhoneInformation(context);
         persistence = new DBPersistence(context);
@@ -94,5 +94,5 @@ public class PersistPhoneData implements Runnable {
             persistence.closeDB();
         }
         return result;
-    }
+    }*/
 }

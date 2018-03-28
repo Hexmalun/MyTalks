@@ -18,6 +18,9 @@ public class BootReceiver extends BroadcastReceiver {
 
             Intent call_service = new Intent(context, CallService.class);
             context.startService(call_service);
+
+            Intent measuremets_service = new Intent(context, getMeasurements.class);
+            context.startService(measuremets_service);
         }
     }
 }

@@ -8,10 +8,8 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 
 import com.researchfip.puc.mytalks.R;
-import com.researchfip.puc.mytalks.database.DBPersistence;
-import com.researchfip.puc.mytalks.database.PersistPhoneData;
+import com.researchfip.puc.mytalks.database.DBPersistence2;
 import com.researchfip.puc.mytalks.database.PersistPhoneData2;
-import com.researchfip.puc.mytalks.database.PhoneData;
 import com.researchfip.puc.mytalks.general.Geo;
 import com.researchfip.puc.mytalks.general.PhoneInformation;
 
@@ -24,7 +22,7 @@ public class IncomingSMSReceiver extends BroadcastReceiver {
     private PhoneInformation pInfo;
     private Context context;
     private int typeEvent, typeService;
-    private DBPersistence persistence;
+    private DBPersistence2 persistence;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -79,12 +77,12 @@ public class IncomingSMSReceiver extends BroadcastReceiver {
 
         Log.d("IncomingSMS", originInfo[0] + " " + targetInfo[0] + " " + timeLog[0]);
 
-        Thread thread = new Thread(new PersistPhoneData(context,originInfo, targetInfo, timeLog, typeEvent, typeService));
-        thread.start();
+       // Thread thread = new Thread(new PersistPhoneData1(context,originInfo, targetInfo, timeLog, typeEvent, typeService));
+      //  thread.start();
         Thread thread2 = new Thread(new PersistPhoneData2(context,originInfo, targetInfo, timeLog, typeEvent, typeService, coordinatesS,coordinatesS));
         thread2.start();
         try{
-            thread.join();
+            thread2.join();
         }catch (InterruptedException e){
             e.printStackTrace();
         }

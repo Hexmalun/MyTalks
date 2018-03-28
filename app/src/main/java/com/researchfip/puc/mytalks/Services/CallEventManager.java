@@ -8,8 +8,6 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.researchfip.puc.mytalks.R;
-import com.researchfip.puc.mytalks.database.PersistPhoneData;
 import com.researchfip.puc.mytalks.database.PersistPhoneData2;
 import com.researchfip.puc.mytalks.general.Geo;
 import com.researchfip.puc.mytalks.general.PhoneInformation;
@@ -65,8 +63,8 @@ public class CallEventManager {
         this.typeEvent = typeEvent;
     }
 
-    public void insertCall(){
-        Thread thread = new Thread(new PersistPhoneData(context, originInfo, targetInfo, timeLog, typeEvent, typeService));
+    /*public void insertCall(){
+        Thread thread = new Thread(new PersistPhoneData1(context, originInfo, targetInfo, timeLog, typeEvent, typeService));
         Log.d("CallEventManager", " " + originInfo[0] + " " +timeLog[0]);
         thread.start();
         try{
@@ -74,7 +72,7 @@ public class CallEventManager {
         }catch (InterruptedException e){
             e.printStackTrace();
         }
-    }
+    }*/
 
     public void insertCall(double [] cooS,double [] cooE){
         Thread thread = new Thread(new PersistPhoneData2(context, originInfo, targetInfo, timeLog, typeEvent, typeService, cooS, cooE));
@@ -121,14 +119,14 @@ public class CallEventManager {
                         Log.d("CallState","began if");
                         timeLog[1] = pInfo.getDateTime();
                         coordinatesE = geo.getGeoCoordinates();
-                        insertCall();
+                        //insertCall();
                         insertCall(coordinatesS,coordinatesE);
                     }else if(misscall && !began){
                         timeLog[0] = pInfo.getDateTime();
                         timeLog[1] = pInfo.getDateTime();
                         coordinatesS = geo.getGeoCoordinates();
                         coordinatesE = coordinatesS;
-                        insertCall();
+                       // insertCall();
                         insertCall(coordinatesS,coordinatesE);
                     }
                     break;

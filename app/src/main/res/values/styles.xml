@@ -25,4 +25,8 @@
         <item name="android:maxWidth">220dip</item>
     </style>
 
+    <style name="NotificationContent" parent="@android:style/TextAppearance.Small">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+    </style>
+
 </resources>

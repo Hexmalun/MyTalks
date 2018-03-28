@@ -153,12 +153,14 @@
                     android:layout_width="match_parent"
                     android:orientation="horizontal"
                     android:layout_height="wrap_content">
+
                     <ImageView
-                        android:layout_marginRight="8dp"
-                        android:layout_gravity="center"
+                        android:id="@+id/wifi_signal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_home_wifi"/>
+                        android:layout_gravity="center"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_home_wifi" />
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:orientation="vertical"
@@ -207,10 +209,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/tv_home_LBL_wifiHotspots"/>
+
                             <TextView
+                                android:id="@+id/num_wifi"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/tv_home_LBL_wifiNumberHotspots"/>
+                                android:text="@string/tv_home_LBL_wifiNumberHotspots" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -223,10 +227,11 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
+                        android:id="@+id/antenna_signal"
                         android:layout_width="wrap_content"
-                        android:layout_marginRight="8dp"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_home_data"/>
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_home_data" />
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:orientation="vertical"
@@ -243,9 +248,10 @@
                                 android:text="@string/tv_home_LBL_dataStatus"/>
 
                             <TextView
+                                android:id="@+id/data_con"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/tv_home_LBL_dataConnected"/>
+                                android:text="@string/tv_home_LBL_dataConnected" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -256,10 +262,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/tv_home_LBL_dataSignal"/>
+
                             <TextView
+                                android:id="@+id/signal_quality"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/tv_home_LBL_dataSignalStatus"/>
+                                android:text="@string/tv_home_LBL_dataSignalStatus" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>

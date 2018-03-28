@@ -40,7 +40,9 @@ import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 import com.researchfip.puc.mytalks.R;
 import com.researchfip.puc.mytalks.database.DBPersistence;
+import com.researchfip.puc.mytalks.database.DBPersistence2;
 import com.researchfip.puc.mytalks.database.PhoneData;
+import com.researchfip.puc.mytalks.database.PhoneData2;
 import com.researchfip.puc.mytalks.general.PhoneInformation;
 
 import java.util.ArrayList;
@@ -53,7 +55,7 @@ import java.util.List;
 @SuppressLint("ValidFragment")
 public class CallsAndSMSFragment extends Fragment {
 
-    private DBPersistence persistence;
+    private DBPersistence2 persistence;
     int typeService;
     private Cursor cursor;
 
@@ -211,7 +213,7 @@ public class CallsAndSMSFragment extends Fragment {
         }
 
         try{
-            persistence = new DBPersistence(getActivity());
+            persistence = new DBPersistence2(getActivity());
             new LoadDataToRecycler().execute();
         }catch (Exception e){
             e.printStackTrace();
@@ -221,7 +223,7 @@ public class CallsAndSMSFragment extends Fragment {
 
     public void getReceivedAndSend(Cursor cursor){
         int[] receivedAndSend = new int[2];
-        PhoneData[] phoneData = new PhoneData[cursor.getCount()];
+        PhoneData2[] phoneData = new PhoneData2 [cursor.getCount()];
         for(int i = 0; i < cursor.getCount(); i++){
             cursor.moveToPosition(i);
             phoneData[i] = persistence.cursorToPhoneData(cursor);
@@ -263,12 +265,12 @@ public class CallsAndSMSFragment extends Fragment {
 
                 if(typeService == PhoneInformation.SMS_SERVICE_ID){
                     columns = new String[]{
-                            DBPersistence.getColOriginName(),
+                            DBPersistence2.getColOriginName(),
                            // DBPersistence.getColOriginNumber(),
-                            DBPersistence.getColTargetName(),
+                            DBPersistence2.getColTargetName(),
                           //  DBPersistence.getColTargetNumber(),
-                            DBPersistence.getColItime(),
-                            DBPersistence.getColAddress()};
+                            DBPersistence2.getColItime(),
+                            DBPersistence2.getColAddress_S()};
 
                     to = new int[] {R.id.tv_sms_item_origin,
                             R.id.tv_sms_item_target,
@@ -280,13 +282,13 @@ public class CallsAndSMSFragment extends Fragment {
                     } else if (typeService == PhoneInformation.CALL_SERVICE_ID){
 
                     columns = new String[]{
-                            DBPersistence.getColOriginName(),
+                            DBPersistence2.getColOriginName(),
                             //DBPersistence.getColOriginNumber(),
-                            DBPersistence.getColTargetName(),
+                            DBPersistence2.getColTargetName(),
                             //DBPersistence.getColTargetNumber(),
-                            DBPersistence.getColItime(),
-                            DBPersistence.getColFtime(),
-                            DBPersistence.getColAddress()};
+                            DBPersistence2.getColItime(),
+                            DBPersistence2.getColFtime(),
+                            DBPersistence2.getColAddress_S()};
                     to = new int[] {
                             R.id.tv_call_item_origin,
                             R.id.tv_call_item_target,
