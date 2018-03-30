@@ -31,10 +31,14 @@ import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
 
 import com.researchfip.puc.mytalks.R;
 import com.researchfip.puc.mytalks.UI.adapters.AppListAdapter;
 import com.researchfip.puc.mytalks.UI.adapters.objects.App;
+import com.researchfip.puc.mytalks.database.Cell;
+import com.researchfip.puc.mytalks.database.DataBaseController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +56,12 @@ public class DataFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<App> appList;
     private Context C;
+    private View V;
+    private DataBaseController db;
+    private Cell c;
+    private ProgressBar prg;
+    private long used = 0;
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

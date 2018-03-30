@@ -68,6 +68,23 @@
     <string name="tv_call_item_itime">20:40</string>
     <string name="tv_call_item_ftime">- 20:45</string>
 
+    <string name="map">Mapa de Antenas</string>
+    <string name="antenna">Antenas mais utilizadas</string>
+    <string name="settings">Opções</string>
+    <string name="lat">Latitude:</string>
+    <string name="lon">Longitude:</string>
+    <string name="tip">Tipo de conexão:</string>
+    <string name="mnc">Operadora:</string>
+    <string name="mcc">País:</string>
+    <string name="cid">Indent Antena:</string>
+    <string name="datUti">Dados Utilizados</string>
+    <string name="dateSt">Plan Start Date: </string>
+    <string name="date">Alterar Dados</string>
+    <string name="dataMax">Data Package Size: </string>
+    <string name="dataPhone">Your CellPhone: </string>
+    <string name="dataFirst">Escolha a data de inicio e o tamanho do seu plano: </string>
+
+
     <string name="intro_text">This sample demonstrates how a notification is created using the
         <b>NotificationCompatBuilder</b>
         with a custom content view. The layout of the notification is defined as a

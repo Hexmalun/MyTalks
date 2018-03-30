@@ -3,6 +3,7 @@ package com.researchfip.puc.mytalks.UI.fragments;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -42,17 +43,23 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.ActionProvider;
 import android.view.ContextMenu;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.researchfip.puc.mytalks.Dialogs.DialogData;
 import com.researchfip.puc.mytalks.R;
 import com.researchfip.puc.mytalks.UI.MainActivity;
 import com.researchfip.puc.mytalks.database.DBPersistence;
@@ -75,6 +82,7 @@ public class HomeFragment extends Fragment {
 
     private DBPersistence2 persistence;
     int typeService;
+    private DataBaseController db;
     private Cursor cursor;
     TextView totalSMS;
     TextView totalCalls;
@@ -103,6 +111,7 @@ public class HomeFragment extends Fragment {
         }
         getSignalInfo(view);
         changeIVWifiStrength(view);
+        setDataNumber(view);
         return view;
     }
 
@@ -233,6 +242,33 @@ public class HomeFragment extends Fragment {
             tvstats.setText(" Not Connected");
             tvnerby.setText(" 0");
             img.setImageResource(R.mipmap.ic_no_wifi);
+        }
+
+    }
+
+    public void setDataNumber(View V){
+        db = new DataBaseController(C);
+        if (V != null) {
+            ViewGroup parent = (ViewGroup) V.getParent();
+            if (parent != null)
+                parent.removeView(V);
+        }
+        try {
+            String[] resp = db.getPersonalData();
+            if (resp.length <= 1) {
+                DialogData newFragment = new DialogData();
+                newFragment.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        String[] resp = db.getPersonalData();
+                        int type = (resp[2].equals("GB")) ? 0 : (resp[2].equals("MB")) ? 1 : 2;
+
+                    }
+                });
+                newFragment.show(getFragmentManager(), "dataPicker");
+
+            }
+        }catch(InflateException e){
         }
 
     }
