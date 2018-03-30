@@ -213,8 +213,10 @@ public class HomeFragment extends Fragment {
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
             int level = WifiManager.calculateSignalLevel(wifiInfo.getRssi(), numberOfLevels);
             tvname.setText(wifiInfo.getSSID());
-            tvstats.setText("Connected");
-            tvnerby.setText("d");
+            tvstats.setText(" Connected");
+            wifiManager.startScan();
+            String s = " "+wifiManager.getScanResults().size();
+            tvnerby.setText(s);
 
             if (level == 0) {
                 img.setImageResource(R.mipmap.ic_low_wifi);
@@ -227,9 +229,9 @@ public class HomeFragment extends Fragment {
                 //  tv.setText("Good");
             }
         }else{
-            tvname.setText("Not Connected");
-            tvstats.setText("Not Connected");
-            tvnerby.setText("0");
+            tvname.setText(" Not Connected");
+            tvstats.setText(" Not Connected");
+            tvnerby.setText(" 0");
             img.setImageResource(R.mipmap.ic_no_wifi);
         }
 
