@@ -37,6 +37,7 @@ public class DataBaseController extends SQLiteOpenHelper {
     private static final String KEY_CC = "cc";
     private static final String KEY_OPERA = "nome";
     private static final String KEY_SIZE = "size";
+    private static final String KEY_NUMBER = "number";
     private static final String KEY_LAC = "lacs";
     private static final String CREATE_cell_TABLE = "CREATE TABLE cell ( cellId INTEGER," +
             "lat REAL, lon REAL, samples REAL, day INTEGER, type TEXT)";
@@ -45,7 +46,7 @@ public class DataBaseController extends SQLiteOpenHelper {
     private static final String CREATE_cellhour_TABLE = "CREATE TABLE cellhour ( cellId INTEGER, day INTEGER, samples TEXT, type TEXT)";
     private static final String CREATE_cellweek_TABLE = "CREATE TABLE cellweek (dayWeek INTEGER, samples TEXT)";
     private static final String CREATE_operadoras_TABLE = "CREATE TABLE operadoras (mcc TEXT, mnc TEXT, sig TEXT, pais TEXT, cc TEXT, nome TEXT)";
-    private static final String CREATE_personal_TABLE = "CREATE TABLE personal (day TEXT, size TEXT, type TEXT)";
+    private static final String CREATE_personal_TABLE = "CREATE TABLE personal (day TEXT, size TEXT, type TEXT, number TEXT)";
     private static final String CREATE_aux_TABLE = "CREATE TABLE aux (size TEXT)";
     private Context c;
 
@@ -81,6 +82,7 @@ public class DataBaseController extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS aux");
         this.onCreate(db);
     }
+
 
     public void updateCell() {
         // 1. get reference to writable DB
@@ -228,6 +230,7 @@ public class DataBaseController extends SQLiteOpenHelper {
             values.put(KEY_DAY, cell.getDay());
             values.put(KEY_TYPE,cell.getType());
             values.put(KEY_SIZE,cell.getData());
+            values.put(KEY_NUMBER,cell.getNumber());
 
             // 3. insert
             db.insert(TABLE_PER, // table
@@ -240,6 +243,7 @@ public class DataBaseController extends SQLiteOpenHelper {
             values.put(KEY_DAY, cell.getDay());
             values.put(KEY_TYPE,cell.getType());
             values.put(KEY_SIZE,cell.getData());
+            values.put(KEY_NUMBER,cell.getNumber());
             // 3. insert
             db.insert(TABLE_PER, // table
                     null, //nullColumnHack
@@ -253,7 +257,7 @@ public class DataBaseController extends SQLiteOpenHelper {
 
 
     public String[] getPersonalData(){
-        String samples = "SELECT "+KEY_DAY+", "+KEY_SIZE+", type FROM "+TABLE_PER;
+        String samples = "SELECT "+KEY_DAY+", "+KEY_SIZE+", type, number FROM "+TABLE_PER;
         String[] resp = {""};
         // 1. get reference to readable DB
         SQLiteDatabase db = this.getReadableDatabase();
@@ -264,10 +268,11 @@ public class DataBaseController extends SQLiteOpenHelper {
 
         // 3. if we got results get the first one
         if (cursor.moveToFirst()) {
-            resp = new String[3];
+            resp = new String[4];
             resp[0] = cursor.getString(0);
             resp[1] = cursor.getString(1);
             resp[2] = cursor.getString(2);
+            resp[3] = cursor.getString(3);
         }
         return resp;
     }

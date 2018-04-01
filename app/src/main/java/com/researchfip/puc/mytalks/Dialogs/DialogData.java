@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -18,6 +19,8 @@ import com.researchfip.puc.mytalks.R;
 import com.researchfip.puc.mytalks.database.Cell;
 import com.researchfip.puc.mytalks.database.DataBaseController;
 
+import java.lang.ref.WeakReference;
+
 
 /**
  * Created by Mateus on 12/09/2016.
@@ -26,7 +29,7 @@ public class DialogData extends DialogFragment {
     private DataBaseController db;
     private Context C;
     private Cell c;
-    EditText et;
+    EditText et,n;
     View V;
 
     private DialogInterface.OnDismissListener onDismissListener;
@@ -61,6 +64,9 @@ public class DialogData extends DialogFragment {
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter2);
         et = (EditText) V.findViewById(R.id.editTextD);
+        n = (EditText) V.findViewById(R.id.number);
+        BrPhoneNumberFormatter addLineNumberFormatter = new BrPhoneNumberFormatter(new WeakReference<EditText>(n));
+        n.addTextChangedListener(addLineNumberFormatter);
         builder.setTitle("Dados do Plano:");
         builder.setView(V)
                 // Add action buttons
@@ -110,7 +116,7 @@ public class DialogData extends DialogFragment {
                         c.setType(spinner.getSelectedItem().toString());
                         c.setDay(spinner2.getSelectedItem().toString());
                         c.setData(et.getText().toString());
-                //        db.addPersonalData(c);
+                        db.addPersonalData(c);
                         dismiss();
                     }
 

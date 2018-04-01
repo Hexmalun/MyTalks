@@ -105,6 +105,7 @@ public class HomeFragment extends Fragment {
         totalCalls = (TextView) view.findViewById(R.id.totalCalls);
         try{
             persistence = new DBPersistence2(getActivity());
+            db = new DataBaseController(getActivity());
             new HomeFragment.LoadDataToRecycler().execute();
         }catch (Exception e){
             e.printStackTrace();
@@ -247,7 +248,6 @@ public class HomeFragment extends Fragment {
     }
 
     public void setDataNumber(View V){
-        db = new DataBaseController(C);
         if (V != null) {
             ViewGroup parent = (ViewGroup) V.getParent();
             if (parent != null)
@@ -257,16 +257,7 @@ public class HomeFragment extends Fragment {
             String[] resp = db.getPersonalData();
             if (resp.length <= 1) {
                 DialogData newFragment = new DialogData();
-                newFragment.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        String[] resp = db.getPersonalData();
-                        int type = (resp[2].equals("GB")) ? 0 : (resp[2].equals("MB")) ? 1 : 2;
-
-                    }
-                });
                 newFragment.show(getFragmentManager(), "dataPicker");
-
             }
         }catch(InflateException e){
         }

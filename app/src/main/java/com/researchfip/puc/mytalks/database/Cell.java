@@ -18,7 +18,7 @@ public class Cell {
     private String data;
     private String mcc;
     private String mnc;
-
+    private String number;
 
 
     public Cell() {
@@ -125,4 +125,8 @@ public class Cell {
         this.mcc = mcc;
     }
 
+    public void setNumber(String number) { this.number = number;
+    }
+    public String getNumber() { return this.number ;
+    }
 }

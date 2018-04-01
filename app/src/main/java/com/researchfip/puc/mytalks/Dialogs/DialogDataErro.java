@@ -25,7 +25,7 @@ public class DialogDataErro extends DialogFragment {
     private DataBaseController db;
     private Context C;
     private Cell c;
-    EditText et;
+    EditText et, num;
     View V;
 
     Spinner spinner, spinner2;
@@ -60,6 +60,7 @@ public class DialogDataErro extends DialogFragment {
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter2);
         et = (EditText) V.findViewById(R.id.editTextD);
+        num = (EditText) V.findViewById(R.id.number);
         builder.setTitle("Por favor insira um tamanho para seu plano:");
         builder.setView(V)
                 // Add action buttons
@@ -111,6 +112,7 @@ public class DialogDataErro extends DialogFragment {
                         c.setType(spinner.getSelectedItem().toString());
                         c.setDay(spinner2.getSelectedItem().toString());
                         c.setData(et.getText().toString());
+                        c.setNumber(num.getText().toString());
                         db.addPersonalData(c);
                         dismiss();
                     }
