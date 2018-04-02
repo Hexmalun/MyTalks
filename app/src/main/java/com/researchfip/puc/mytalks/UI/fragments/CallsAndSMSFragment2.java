@@ -125,14 +125,14 @@ public class CallsAndSMSFragment2 extends Fragment {
                         }
                         if(latS == latE && lonS == lonE || latE == 91){
                             LatLng posisiabsen1 = new LatLng( Double.parseDouble(c.getString(8)), Double.parseDouble(c.getString(9))); ////your lat lng
-                            //  LatLng posisiabsen2 = new LatLng(-19.927503, -43.948980); ////your lat lng
+                            //LatLng posisiabsen2 = new LatLng(-19.927503, -43.948980); ////your lat lng
                             Log.d("Saved ",c.getColumnName(4)+c.getString(4));
                             googleMap.addMarker(new MarkerOptions().position(posisiabsen1)
                                     .title("From:"+c.getString(5) +"   Time:"+ c.getString(13))
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
                             googleMap.moveCamera(CameraUpdateFactory.newLatLng(posisiabsen1));
-                            googleMap.getUiSettings().setZoomControlsEnabled(true);
-                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+                            googleMap.getUiSettings().setZoomControlsEnabled(true);//
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(posisiabsen1, 15.0f));
                         }else{
                             LatLng posisiabsen1 = new LatLng( latS, lonS); ////your lat lng
                             LatLng posisiabsen2 = new LatLng( latE, latS); ////your lat lng
@@ -141,7 +141,7 @@ public class CallsAndSMSFragment2 extends Fragment {
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
                             googleMap.moveCamera(CameraUpdateFactory.newLatLng(posisiabsen1));
                             googleMap.getUiSettings().setZoomControlsEnabled(true);
-                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(posisiabsen1, 15.0f));
                             googleMap.addMarker(new MarkerOptions().position(posisiabsen2)
                                     .title("From:"+c.getString(4) +"   End Time:"+ c.getString(14))
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));

@@ -153,25 +153,27 @@ public class HomeFragment extends Fragment {
                     if (ActivityCompat.checkSelfPermission(C, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                       return;
                     }
-                    final CellInfo info = m.getAllCellInfo().get(0);
-                    if (info instanceof CellInfoGsm) {
-                        final CellSignalStrengthGsm gsm = ((CellInfoGsm) info).getCellSignalStrength();
-                        final CellIdentityGsm idGsm = ((CellInfoGsm) info).getCellIdentity();
-                        dbm[0] = ""+ gsm.getDbm();
-                    } else if (info instanceof CellInfoLte) {
-                        final CellSignalStrengthLte lte = ((CellInfoLte) info).getCellSignalStrength();
-                        final CellIdentityLte idLte = ((CellInfoLte) info).getCellIdentity();
-                        dbm[0] = ""+ lte.getDbm();
-                    } else if (info instanceof CellInfoCdma) {
-                        final CellSignalStrengthCdma cdma = ((CellInfoCdma) info).getCellSignalStrength();
-                        final CellIdentityCdma idCdma = ((CellInfoCdma) info).getCellIdentity();
-                        dbm[0] = ""+cdma.getDbm();
-                    } else if (info instanceof CellInfoWcdma) {
-                        final CellSignalStrengthWcdma wcdma = ((CellInfoWcdma) info).getCellSignalStrength();
-                        final CellIdentityWcdma idWcdma = ((CellInfoWcdma) info).getCellIdentity();
-                        dbm[0] = ""+ wcdma.getDbm();
+                    if(m.getAllCellInfo() != null) {
+                        final CellInfo info = m.getAllCellInfo().get(0);
+                        if (info instanceof CellInfoGsm) {
+                            final CellSignalStrengthGsm gsm = ((CellInfoGsm) info).getCellSignalStrength();
+                            final CellIdentityGsm idGsm = ((CellInfoGsm) info).getCellIdentity();
+                            dbm[0] = "" + gsm.getDbm();
+                        } else if (info instanceof CellInfoLte) {
+                            final CellSignalStrengthLte lte = ((CellInfoLte) info).getCellSignalStrength();
+                            final CellIdentityLte idLte = ((CellInfoLte) info).getCellIdentity();
+                            dbm[0] = "" + lte.getDbm();
+                        } else if (info instanceof CellInfoCdma) {
+                            final CellSignalStrengthCdma cdma = ((CellInfoCdma) info).getCellSignalStrength();
+                            final CellIdentityCdma idCdma = ((CellInfoCdma) info).getCellIdentity();
+                            dbm[0] = "" + cdma.getDbm();
+                        } else if (info instanceof CellInfoWcdma) {
+                            final CellSignalStrengthWcdma wcdma = ((CellInfoWcdma) info).getCellSignalStrength();
+                            final CellIdentityWcdma idWcdma = ((CellInfoWcdma) info).getCellIdentity();
+                            dbm[0] = "" + wcdma.getDbm();
+                        }
+                        changeIVSIgnalStrength(Integer.parseInt(dbm[0]), V);
                     }
-                    changeIVSIgnalStrength(Integer.parseInt(dbm[0]),V);
                 }
             }
             if (ActivityCompat.checkSelfPermission(C, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(C, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {

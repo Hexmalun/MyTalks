@@ -20,6 +20,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.researchfip.puc.mytalks.R;
 
@@ -49,26 +50,26 @@ public class MapFragment extends Fragment {
         mMapView.onCreate(savedInstanceState);
 
         mMapView.onResume(); // needed to get the map to display immediately
-
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
                 LatLng posisiabsen1 = new LatLng(-19.921603, -43.939367); ////your lat lng
                 LatLng posisiabsen2 = new LatLng(-19.927503, -43.948980); ////your lat lng
-                googleMap.addMarker(new MarkerOptions().position(posisiabsen1).title("Yout title")
+                Log.d("Map","Marker") ;
+                Marker a = googleMap.addMarker(new MarkerOptions().position(posisiabsen1).title("Yout title")
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(posisiabsen1));
                 googleMap.getUiSettings().setZoomControlsEnabled(true);
-                googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(posisiabsen1));
                 googleMap.addMarker(new MarkerOptions().position(posisiabsen2).title("Yout title")
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                Log.d("Map","All Marekers"+a.getPosition()) ;
             }
         });
 
