@@ -2,10 +2,12 @@ package com.researchfip.puc.mytalks.UI.fragments;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.usage.NetworkStatsManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.TrafficStats;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -203,19 +205,30 @@ public class DataFragment extends Fragment {
         int pb = 0;
         if(siz != 0) {
             pb = Math.round((aux / siz));
-            Log.d("DataUsed#:","use:"+pb);
+            Log.d("DataFragment.Bar1","use:"+pb);
         }
-        Log.d("DataUsed¨&:","use:"+used);
+        Log.d("DataFragment.Bar2","use:"+used);
         prg.setProgress(pb);
     }
 
     private void fillData(long s, long e) {
-        Log.d("DataUsed:","filldata");
+        Log.d("DataFragment.Filldata1","filldata");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Log.d("DataUsed:","filldataif");
+            Log.d("DataFragment.Filldata2:","filldataif");
             NetworkStatsManager networkStatsManager = (NetworkStatsManager) C.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
             NetworkStatsHelper networkStatsHelper = new NetworkStatsHelper(networkStatsManager);
             fillNetworkStatsAll(networkStatsHelper, e, s);
+        }
+        ActivityManager manager = (ActivityManager) C.getSystemService(C.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> runningApps = manager.getRunningAppProcesses();
+
+        for (ActivityManager.RunningAppProcessInfo runningApp : runningApps) {
+            // Get UID of the selected process
+            int uid = runningApp.uid;
+
+            long received = TrafficStats.getUidRxBytes(uid);//received amount of each app
+            long send   = TrafficStats.getUidTxBytes(uid);//sent amount of each app
+            Log.v("DAta:" + uid , "Send :" + send + ", Received :" + received);
         }
     }
 
@@ -223,7 +236,7 @@ public class DataFragment extends Fragment {
     private void fillNetworkStatsAll(NetworkStatsHelper networkStatsHelper, long s, long e) {
         long mobileRx = networkStatsHelper.getAllRxBytesMobile(C,s,e);
         long mobileTx = networkStatsHelper.getAllTxBytesMobile(C,s,e);
-        Log.d("DataUsed:","use:"+used+"    "+mobileRx+"    "+mobileTx);
+        Log.d("DataFragment.FillNetSA:","use:"+used+"    "+mobileRx+"    "+mobileTx);
         used = mobileRx + mobileTx;
     }
 

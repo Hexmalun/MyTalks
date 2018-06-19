@@ -1,6 +1,7 @@
 package com.researchfip.puc.mytalks.Services;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,6 +13,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
+import android.net.TrafficStats;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -41,6 +43,8 @@ import com.researchfip.puc.mytalks.UI.MainActivity;
 import com.researchfip.puc.mytalks.database.Cell;
 import com.researchfip.puc.mytalks.database.DataBaseController;
 import com.researchfip.puc.mytalks.database.SendData;
+
+import java.util.List;
 
 /**
  * Created by Mateus on 10/06/2016.
