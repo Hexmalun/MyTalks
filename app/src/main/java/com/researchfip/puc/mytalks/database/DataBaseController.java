@@ -49,6 +49,9 @@ public class DataBaseController extends SQLiteOpenHelper {
     private static final String CREATE_personal_TABLE = "CREATE TABLE personal (day TEXT, size TEXT, type TEXT, number TEXT)";
     private static final String CREATE_aux_TABLE = "CREATE TABLE aux (size TEXT)";
     private Context c;
+    private static final String CREATE_AppUse_TABLE = "CREATE TABLE appuse (uid TEXT, total INTEGER, last INTEGER, time TEXT)";
+    private static final String CREATE_Apptimes_TABLE = "CREATE TABLE app (uid TEXT, name TEXT, send INTEGER, recieve INTEGER, time_start TEXT, type INTEGER)";
+
 
     public DataBaseController(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -64,6 +67,8 @@ public class DataBaseController extends SQLiteOpenHelper {
         db.execSQL(CREATE_operadoras_TABLE);
         db.execSQL(CREATE_personal_TABLE);
         db.execSQL(CREATE_aux_TABLE);
+        db.execSQL(CREATE_AppUse_TABLE);
+        db.execSQL(CREATE_Apptimes_TABLE);
         String aux = "SELECT "+KEY_CC+" FROM "+TABLE_OPERA;
         Cursor auxc = db.rawQuery(aux,null);
         if(!auxc.moveToFirst()){
@@ -79,10 +84,10 @@ public class DataBaseController extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS cellhour");
         db.execSQL("DROP TABLE IF EXISTS cellweek");
         db.execSQL("DROP TABLE IF EXISTS personal");
-        db.execSQL("DROP TABLE IF EXISTS aux");
+        db.execSQL("DROP TABLE IF EXISTS appuse");
+        db.execSQL("DROP TABLE IF EXISTS app");
         this.onCreate(db);
     }
-
 
     public void updateCell() {
         // 1. get reference to writable DB
@@ -255,7 +260,6 @@ public class DataBaseController extends SQLiteOpenHelper {
         db.close();
     }
 
-
     public String[] getPersonalData(){
         String samples = "SELECT "+KEY_DAY+", "+KEY_SIZE+", type, number FROM "+TABLE_PER;
         String[] resp = {""};
@@ -303,7 +307,6 @@ public class DataBaseController extends SQLiteOpenHelper {
         // 4. close
         db.close();
     }
-
 
     public String[] getAuxData(){
         String samples = "SELECT "+KEY_SIZE+" FROM "+"aux";
@@ -415,79 +418,99 @@ public class DataBaseController extends SQLiteOpenHelper {
         return resp;
     }
 
-/*
-    // Get All jogadors
-    public List<Cell> getAlljogadors() {
-        List<Cell> jogadores = new LinkedList<Cell>();
-
-        // 1. build the query
-        String query = "SELECT  * FROM " + TABLE_CELL;
-
-        // 2. get reference to writable DB
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-
-        // 3. go over each row, build jogador and add it to list
-        Cell cell = null;
-        if (cursor.moveToFirst()) {
-            do {
-                cell = new Cell();
-                String aux = cursor.getString(1);
-                String[] arrr = aux.split("#");
-                jogador.setNumero(Integer.parseInt(arrr[0]));
-                jogador.setCoordenadas(Double.parseDouble(arrr[1]), Double.parseDouble(arrr[2]));
-                jogador.setNome(cursor.getString(0));
-
-                // Add jogador to jogadors
-                jogadores.add(jogador);
-            } while (cursor.moveToNext());
-        }
-
-        Log.d("getAlljogadores()", jogadores.toString());
-
-        // return jogadores
-        return jogadores;
-    }
-
-    // Updating single jogador
-    public int updatejogador(Jogador jogador) {
-
+    public void addAppData(long uid, long send, long recieve, String time) {
         // 1. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
-
         // 2. create ContentValues to add key "column"/value
         ContentValues values = new ContentValues();
-        values.put("nome", jogador.getNome()); // get title
-        values.put("numero", jogador.getNumero()); // get author
-
-        // 3. updating row
-        int i = db.update(TABLE_CELL, //table
-                values, // column/value
-                KEY_NOME+" = ?", // selections
-                new String[] { String.valueOf(jogador.getNome()) }); //selection args
+        values.put("uid", uid);
+        values.put("total", send + recieve);
+        values.put("last", 0);
+        values.put("time", time);
+        // 3. insert
+        db.insert("appuse", // table
+                null, //nullColumnHack
+                values); // key/value -> keys = column names/ values = column values
 
         // 4. close
         db.close();
-
-        return i;
-
     }
 
-    // Deleting single jogador
-    public void deletejogador(Jogador jogador) {
-
+    public long [][] getAppData(long [][] apps) {
         // 1. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
-
-        // 2. delete
-        db.delete(TABLE_CELL,
-                KEY_NOME+" = ?",
-                new String[] { String.valueOf(jogador.getNome()) });
-
-        // 3. close
+        Calendar c = Calendar.getInstance();
+        Cursor retor = db.rawQuery("SELECT * FROM appuse", null);
+        retor.moveToFirst();
+        while (!retor.isAfterLast()) {
+            int uid = Integer.parseInt(retor.getString(0));
+            int total = Integer.parseInt(retor.getString(1));
+            long last = Long.parseLong(retor.getString(2));
+            long time = Long.parseLong(retor.getString(3));
+            long m = 259200*10000;
+            if (System.currentTimeMillis()- time < m){
+                int i = 0;
+                while (apps[i][0] != uid){
+                    i++;
+                }
+                long l = apps[i][1] - total;
+                if(l < last){
+                    last = last + l;
+                }else{
+                    last = l;
+                }
+                apps[i][1] = last;
+                ContentValues cv = new ContentValues();
+                cv.put("last",last); //These Fields should be your String values of actual column names
+                db.update("appuse", cv, "uid="+uid, null);
+            } else{
+                ContentValues cv = new ContentValues();
+                cv.put("last",last);
+                db.update("appuse", cv, "uid="+uid, null);
+            }
+            retor.moveToNext();
+        }
         db.close();
+        return apps;
+    }
 
-        Log.d("deletejogador", jogador.toString());
-
-    }*/
+    public long [][] getAppData2(long [][] apps) {
+        // 1. get reference to writable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+        Calendar c = Calendar.getInstance();
+        Cursor retor = db.rawQuery("SELECT time FROM appuse LIMIT 1", null);
+        retor.moveToFirst();
+        long t = Long.parseLong(retor.getString(0));
+        for(int i = 0; i < apps.length; i++){
+            retor = db.rawQuery("SELECT * FROM appuse WHERE uid ="+ apps[i][0], null);
+            if(retor.moveToFirst()) {
+                int uid = Integer.parseInt(retor.getString(0));
+                int total = Integer.parseInt(retor.getString(1));
+                long last = Long.parseLong(retor.getString(2));
+                long time = Long.parseLong(retor.getString(3));
+                long m = 259200 * 10000;
+                if (System.currentTimeMillis() - time < m) {
+                    long l = apps[i][1] - total;
+                    if (l < last) {
+                        if (l < 0) last = last - l;
+                        else last = last + l;
+                    } else {
+                        last = l;
+                    }
+                    apps[i][1] = last;
+                    ContentValues cv = new ContentValues();
+                    cv.put("last", last); //These Fields should be your String values of actual column names
+                    db.update("appuse", cv, "uid=" + uid, null);
+                } else {
+                    ContentValues cv = new ContentValues();
+                    cv.put("last", last);
+                    db.update("appuse", cv, "uid=" + uid, null);
+                }
+            }else{
+                addAppData(apps[i][0], apps[i][1], 0, ""+t);
+            }
+        }
+        db.close();
+        return apps;
+    }
 }
