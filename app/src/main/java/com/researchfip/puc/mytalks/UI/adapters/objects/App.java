@@ -7,7 +7,7 @@ import android.widget.ImageView;
  * Created by joaocastro on 01/11/17.
  */
 
-public class App {
+public class App implements Comparable<App> {
 
     private String name;
     private String usage;
@@ -41,5 +41,15 @@ public class App {
 
     public void setIcon(Drawable icon) {
         this.icon = icon;
+    }
+
+    public int compareTo(App other) {
+        int retorno = 0;
+        if(Long.parseLong(usage)>Long.parseLong(other.usage)){
+            retorno = -1;
+        }else if(Long.parseLong(usage)<Long.parseLong(other.usage)){
+            retorno = 1;
+        }
+        return retorno;
     }
 }

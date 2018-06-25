@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.Calendar;
 
@@ -436,10 +437,40 @@ public class DataBaseController extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void addAllAppData(long [][] data) {
+        // 1. get reference to writable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("appuse", null, null);
+        // 2. create ContentValues to add key "column"/value
+      //  Cursor retor = db.rawQuery("SELECT * FROM appuse", null);
+        for (int i = 0; i < data.length; i++) {
+            //if(retor.moveToFirst()) {
+            boolean aux = true;
+            for(int j = i+1; j <data.length && aux;j++){
+                if(data[i][0] == data[j][0]) {
+                    aux = false;
+                }
+            }
+            if(aux){
+                Log.v("DB.getAppData2:","COlocou no banco");
+                ContentValues values = new ContentValues();
+                values.put("uid", data[i][0]);
+                values.put("total", data[i][1] + data[i][2]);
+                values.put("last", 0);
+                values.put("time", data[i][3]);
+                // 3. insert
+                db.insert("appuse", // table
+                        null, //nullColumnHack
+                        values); // key/value -> keys = column names/ values = column values
+            }
+        }
+        // 4. close
+        db.close();
+    }
+
     public long [][] getAppData(long [][] apps) {
         // 1. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
-        Calendar c = Calendar.getInstance();
         Cursor retor = db.rawQuery("SELECT * FROM appuse", null);
         retor.moveToFirst();
         while (!retor.isAfterLast()) {
@@ -477,19 +508,27 @@ public class DataBaseController extends SQLiteOpenHelper {
     public long [][] getAppData2(long [][] apps) {
         // 1. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
-        Calendar c = Calendar.getInstance();
+
         Cursor retor = db.rawQuery("SELECT time FROM appuse LIMIT 1", null);
-        retor.moveToFirst();
+        if(retor.moveToFirst()){
+            Log.v("DB.getAppData2:", "Running apps");
+        }
         long t = Long.parseLong(retor.getString(0));
         for(int i = 0; i < apps.length; i++){
+            boolean aux = true;
+            for(int j = i+1; j <apps.length && aux;j++){
+                if(apps[i][0] == apps[j][0]) {
+                    aux = false;
+                }
+            }
             retor = db.rawQuery("SELECT * FROM appuse WHERE uid ="+ apps[i][0], null);
             if(retor.moveToFirst()) {
                 int uid = Integer.parseInt(retor.getString(0));
                 int total = Integer.parseInt(retor.getString(1));
                 long last = Long.parseLong(retor.getString(2));
                 long time = Long.parseLong(retor.getString(3));
-                long m = 259200 * 10000;
-                if (System.currentTimeMillis() - time < m) {
+                long m = 259200000;
+                if ((System.currentTimeMillis() - time)/10< m) {
                     long l = apps[i][1] - total;
                     if (l < last) {
                         if (l < 0) last = last - l;

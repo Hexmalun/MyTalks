@@ -60,6 +60,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import mobi.gspd.segmentedbarview.Segment;
@@ -205,7 +206,11 @@ public class DataFragment extends Fragment {
             st.set(e.get(Calendar.YEAR), m, Integer.parseInt(day));
         }
         start = st.getTimeInMillis();
-        fillData(start, end);
+        try {
+            fillData(start, end);
+        } catch (PackageManager.NameNotFoundException e1) {
+            e1.printStackTrace();
+        }
 
         int ty = (t.equals("GB")) ? 1000000000 : (t.equals("MB")) ? 1000000 : 1000;
         long aux = used/ty;
@@ -219,7 +224,7 @@ public class DataFragment extends Fragment {
         prg.setProgress(pb);
     }
 
-    private void fillData(long s, long e) {
+    private void fillData(long s, long e) throws PackageManager.NameNotFoundException {
         Log.d("DataFragment.Filldata1","filldata");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Log.d("DataFragment.Filldata2:","filldataif");
@@ -241,20 +246,42 @@ public class DataFragment extends Fragment {
             long [] l = getTotalBytesManual(uid);
             long received = l[0];//received amount of each app
             long send   = l[1];//sent amount of each app
-            Log.v("DAta:" + C.getPackageManager().getNameForUid(uid) , "Send :" + send + ", Received :" + received);
-            ApplicationInfo applicationInfo = null;
-            try {
-                applicationInfo = pm.getApplicationInfo(C.getPackageManager().getNameForUid(uid), 0);
-            } catch (final PackageManager.NameNotFoundException z) {
-                z.printStackTrace();
-            }
-            final String title = (String)((applicationInfo != null) ? pm.getApplicationLabel(applicationInfo) : runningApp.packageName);
-            Drawable icon = ((applicationInfo != null)?pm.getApplicationIcon(applicationInfo):null);
+        //    Log.v("DAta:" + C.getPackageManager().getNameForUid(uid) , "Send :" + send + ", Received :" + received);
+           // ApplicationInfo applicationInfo = null;
+           // try {
+           //     applicationInfo = pm.getApplicationInfo(C.getPackageManager().getNameForUid(uid), 0);
+           // } catch (final PackageManager.NameNotFoundException z) {
+           //     z.printStackTrace();
+          //  }
+          //  final String title = (String)((applicationInfo != null) ? pm.getApplicationLabel(applicationInfo) : runningApp.packageName);
+          //  Drawable icon = ((applicationInfo != null)?pm.getApplicationIcon(applicationInfo):null);
             apps[i][0] = uid;
             apps[i][1] = send+received;
             i++;
         }
-        apps = db.getAppData(apps);
+        Log.v("fillData", "");
+        apps = db.getAppData2(apps);
+        for (int j = 0; j<apps.length; j++){
+            int uid = (int) apps[j][0];
+            long totalused = apps[j][1];
+           // Log.v("DAta:" + C.getPackageManager().getNameForUid(uid) , "Used:" +totalused);
+            ApplicationInfo applicationInfo = null;
+            try {
+                applicationInfo = pm.getApplicationInfo(C.getPackageManager().getNameForUid(uid), 0);
+            } catch (final PackageManager.NameNotFoundException z) {
+               // z.printStackTrace();
+            }
+            final String title = (String)((applicationInfo != null) ? pm.getApplicationLabel(applicationInfo) : C.getPackageManager().getNameForUid(uid));
+            Drawable icon = ((applicationInfo != null)?pm.getApplicationIcon(C.getPackageManager().getNameForUid(uid)):null);
+            //Drawable appIcon = pm.getApplicationIcon("com.google.maps");
+          //  Drawable myIcon = getResources().getDrawable( R.drawable.ic_home_wifi );
+            if(totalused>0) {
+                App app = new App(title, totalused + "", icon);
+                appList.add(app);
+            }
+        }
+        Collections.sort(appList);
+
        // if(send+received > 0) {
         //    App app = new App(title, send + received + "", icon);
          //   appList.add(app);

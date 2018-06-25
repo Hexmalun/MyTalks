@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -69,8 +70,14 @@ import com.researchfip.puc.mytalks.database.PhoneData;
 import com.researchfip.puc.mytalks.database.PhoneData2;
 import com.researchfip.puc.mytalks.general.PhoneInformation;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static android.content.Context.TELEPHONY_SERVICE;
 
@@ -260,11 +267,42 @@ public class HomeFragment extends Fragment {
             if (resp.length <= 1) {
                 DialogData newFragment = new DialogData();
                 newFragment.show(getFragmentManager(), "dataPicker");
+                PackageManager pm = C.getPackageManager();
+                List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+                int size = packages.size();
+                long [] [] apps = new long [size][4];
+                int i = 0;
+                long time = System.currentTimeMillis();
+                for (ApplicationInfo runningApp : packages) {
+                    // Get UID of the selected process
+                    int uid = runningApp.uid;
+                    long [] l = getTotalBytesManual(uid);
+                    long received = l[0];//received amount of each app
+                    long send   = l[1];//sent amount of each app
+                   // Log.v("DAta:" + C.getPackageManager().getNameForUid(uid) , "Send :" + send + ", Received :" + received);
+                    // ApplicationInfo applicationInfo = null;
+                    // try {
+                    //     applicationInfo = pm.getApplicationInfo(C.getPackageManager().getNameForUid(uid), 0);
+                    // } catch (final PackageManager.NameNotFoundException z) {
+                    //     z.printStackTrace();
+                    //  }
+                    //  final String title = (String)((applicationInfo != null) ? pm.getApplicationLabel(applicationInfo) : runningApp.packageName);
+                    //  Drawable icon = ((applicationInfo != null)?pm.getApplicationIcon(applicationInfo):null);
+                    apps[i][0] = uid;
+                    apps[i][1] = send;
+                    apps[i][2] = received;
+                    apps[i][3] = time;
+                    i++;
+                }
+              //  Log.v("DataFragman.fillData:", "Running apps" + apps.length);
+                db.addAllAppData(apps);
             }
         }catch(InflateException e){
         }
 
     }
+
+
 
     public class LoadDataToRecycler extends AsyncTask<String, Void, String> {
 
@@ -285,6 +323,45 @@ public class HomeFragment extends Fragment {
             totalSMS.setText(sms+"");
             totalCalls.setText(calls +"");
         }
+
+    }
+
+    private long [] getTotalBytesManual(int localUid){
+        File dir = new File("/proc/uid_stat/");
+        String[] children = dir.list();
+        long [] r = new long [2];
+        if(!Arrays.asList(children).contains(String.valueOf(localUid))){
+            r[0] = Long.parseLong("0");
+            r[1] = Long.parseLong("0");
+            return r;
+        }
+        File uidFileDir = new File("/proc/uid_stat/"+String.valueOf(localUid));
+        File uidActualFileReceived = new File(uidFileDir,"tcp_rcv");
+        File uidActualFileSent = new File(uidFileDir,"tcp_snd");
+
+        String textReceived = "0";
+        String textSent = "0";
+
+        try {
+            BufferedReader brReceived = new BufferedReader(new FileReader(uidActualFileReceived));
+            BufferedReader brSent = new BufferedReader(new FileReader(uidActualFileSent));
+            String receivedLine;
+            String sentLine;
+
+            if ((receivedLine = brReceived.readLine()) != null) {
+                textReceived = receivedLine;
+            }
+            if ((sentLine = brSent.readLine()) != null) {
+                textSent = sentLine;
+            }
+
+        }
+        catch (IOException e) {
+            Log.v("Erro" , "DataFragment.getTotalBytesManual ");
+        }
+        r[0] = Long.valueOf(textReceived).longValue();
+        r[1] = Long.valueOf(textSent).longValue();
+        return r;
 
     }
 

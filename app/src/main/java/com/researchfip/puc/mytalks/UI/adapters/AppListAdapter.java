@@ -37,6 +37,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHold
         App app = appList.get(position);
         holder.appName.setText(app.getName());
         holder.appUsage.setText(app.getUsage());
+        holder.appLogo.setImageDrawable(app.getIcon());
     }
 
     @Override
