@@ -47,7 +47,6 @@ public class NetworkStatsHelper {
     public long getAllTxBytesMobile(Context context) {
         NetworkStats.Bucket bucket;
         try {
-
             bucket = networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_MOBILE,
                     getSubscriberId(context, ConnectivityManager.TYPE_MOBILE),
                     0,

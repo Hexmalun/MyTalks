@@ -44,6 +44,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.researchfip.puc.mytalks.R;
 import com.researchfip.puc.mytalks.UI.adapters.AppListAdapter;
@@ -57,6 +58,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -95,7 +98,7 @@ public class DataFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.data_fragment, container, false);
         C = inflater.getContext();
-        getSignalInfo(v);
+      //  getSignalInfo(v);
         db = new DataBaseController(C);
         this.appList = new ArrayList<>();
         recyclerView = (RecyclerView) v.findViewById(R.id.rv_apps);
@@ -122,7 +125,7 @@ public class DataFragment extends Fragment {
        // appList.add(app2);
        // appList.add(app3);
        // appList.add(app4);
-
+        Toast.makeText(C, android.net.TrafficStats.getTotalRxBytes()+"Bytes", Toast.LENGTH_SHORT).show();
         AppListAdapter adapter = new AppListAdapter(appList);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());;
@@ -205,6 +208,7 @@ public class DataFragment extends Fragment {
         }else{
             st.set(e.get(Calendar.YEAR), m, Integer.parseInt(day));
         }
+        Log.d("DataFragment.Bar1","use:"+st.getTime());
         start = st.getTimeInMillis();
         try {
             fillData(start, end);
@@ -212,16 +216,34 @@ public class DataFragment extends Fragment {
             e1.printStackTrace();
         }
 
-        int ty = (t.equals("GB")) ? 1000000000 : (t.equals("MB")) ? 1000000 : 1000;
-        long aux = used/ty;
-        long siz = Long.parseLong(s)/100;
+        float ty = (t.equals("GB")) ? 1073741824 : (t.equals("MB")) ? 1048576 : 1024;
+        float aux = used/ty;
+        if (aux < 0.5){
+            ty = 1048576;
+        }
+        float siz = Float.parseFloat(s)/100;
         int pb = 0;
         if(siz != 0) {
-            pb = Math.round((aux / siz));
-            Log.d("DataFragment.Bar1","use:"+pb);
-        }
-        Log.d("DataFragment.Bar2","use:"+used);
+            pb = (int)Math.round((aux / siz));
+         }
         prg.setProgress(pb);
+        DecimalFormat df = new DecimalFormat("#.###");
+        df.setRoundingMode(RoundingMode.CEILING);
+        if(ty == 1073741824) {
+            up.setText(df.format(aux)+" GB");
+        }else if(ty == 1048576){
+            up.setText(df.format(used/ty)+" MB");
+        }else{
+            up.setText(df.format(aux)+" KB");
+        }
+
+        if(t.equals("GB")) {
+            pl.setText(df.format(Float.parseFloat(s)-(used/1073741824)) +" GB");
+        }else if(t.equals("MB")){
+            pl.setText(df.format(Float.parseFloat(s)- aux)+" MB");
+        }else{
+            pl.setText(df.format(Float.parseFloat(s)- aux)+" KB");
+        }
     }
 
     private void fillData(long s, long e) throws PackageManager.NameNotFoundException {
@@ -324,6 +346,33 @@ public class DataFragment extends Fragment {
         r[0] = Long.valueOf(textReceived).longValue();
         r[1] = Long.valueOf(textSent).longValue();
         return r;
+
+    }
+
+    private long  getTotalBytesMobileManual(){
+        File dir1 = new File("/sys/class/net/rmnet0/statistics/rx_bytes");
+        File dir2 = new File("/sys/class/net/rmnet0/statistics/tx_bytes");
+        String textReceived = "0";
+        String textSent = "0";
+
+        try {
+            BufferedReader brReceived = new BufferedReader(new FileReader(dir1));
+            BufferedReader brSent = new BufferedReader(new FileReader(dir2));
+            String receivedLine;
+            String sentLine;
+
+            if ((receivedLine = brReceived.readLine()) != null) {
+                textReceived = receivedLine;
+            }
+            if ((sentLine = brSent.readLine()) != null) {
+                textSent = sentLine;
+            }
+
+        }
+        catch (IOException e) {
+            Log.v("Erro" , "DataFragment.getTotalBytesManual ");
+        }
+        return Long.valueOf(textReceived).longValue()+Long.valueOf(textSent).longValue();
 
     }
 
