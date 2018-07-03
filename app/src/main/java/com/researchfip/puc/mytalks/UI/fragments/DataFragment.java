@@ -98,7 +98,7 @@ public class DataFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.data_fragment, container, false);
         C = inflater.getContext();
-      //  getSignalInfo(v);
+        getSignalInfo(v);
         db = new DataBaseController(C);
         this.appList = new ArrayList<>();
         recyclerView = (RecyclerView) v.findViewById(R.id.rv_apps);
@@ -248,61 +248,52 @@ public class DataFragment extends Fragment {
 
     private void fillData(long s, long e) throws PackageManager.NameNotFoundException {
         Log.d("DataFragment.Filldata1","filldata");
+        this.appList = new ArrayList<>();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Log.d("DataFragment.Filldata2:","filldataif");
             NetworkStatsManager networkStatsManager = (NetworkStatsManager) C.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
             NetworkStatsHelper networkStatsHelper = new NetworkStatsHelper(networkStatsManager);
             fillNetworkStatsAll(networkStatsHelper, e, s);
-        }
-        //ActivityManager manager = (ActivityManager) C.getSystemService(C.ACTIVITY_SERVICE);
-       // List<ActivityManager.RunningAppProcessInfo> runningApps = manager.get.getRunningAppProcesses();
-        PackageManager pm = C.getPackageManager();
-        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-        Log.v("DataFragman.fillData:", "Running apps" + packages.size());
-        int size = packages.size();
-        long [] [] apps = new long [size][2];
-        int i = 0;
-        for (ApplicationInfo runningApp : packages) {
-            // Get UID of the selected process
-            int uid = runningApp.uid;
-            long [] l = getTotalBytesManual(uid);
-            long received = l[0];//received amount of each app
-            long send   = l[1];//sent amount of each app
-        //    Log.v("DAta:" + C.getPackageManager().getNameForUid(uid) , "Send :" + send + ", Received :" + received);
-           // ApplicationInfo applicationInfo = null;
-           // try {
-           //     applicationInfo = pm.getApplicationInfo(C.getPackageManager().getNameForUid(uid), 0);
-           // } catch (final PackageManager.NameNotFoundException z) {
-           //     z.printStackTrace();
-          //  }
-          //  final String title = (String)((applicationInfo != null) ? pm.getApplicationLabel(applicationInfo) : runningApp.packageName);
-          //  Drawable icon = ((applicationInfo != null)?pm.getApplicationIcon(applicationInfo):null);
-            apps[i][0] = uid;
-            apps[i][1] = send+received;
-            i++;
-        }
-        Log.v("fillData", "");
-        apps = db.getAppData2(apps);
-        for (int j = 0; j<apps.length; j++){
-            int uid = (int) apps[j][0];
-            long totalused = apps[j][1];
-           // Log.v("DAta:" + C.getPackageManager().getNameForUid(uid) , "Used:" +totalused);
-            ApplicationInfo applicationInfo = null;
-            try {
-                applicationInfo = pm.getApplicationInfo(C.getPackageManager().getNameForUid(uid), 0);
-            } catch (final PackageManager.NameNotFoundException z) {
-               // z.printStackTrace();
+        }else {
+            PackageManager pm = C.getPackageManager();
+            List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+            Log.v("DataFragman.fillData:", "Running apps" + packages.size());
+            int size = packages.size();
+            long[][] apps = new long[size][2];
+            int i = 0;
+            for (ApplicationInfo runningApp : packages) {
+                // Get UID of the selected process
+                int uid = runningApp.uid;
+                long[] l = getTotalBytesManual(uid);
+                long received = l[0];//received amount of each app
+                long send = l[1];//sent amount of each app
+                apps[i][0] = uid;
+                apps[i][1] = send + received;
+                i++;
             }
-            final String title = (String)((applicationInfo != null) ? pm.getApplicationLabel(applicationInfo) : C.getPackageManager().getNameForUid(uid));
-            Drawable icon = ((applicationInfo != null)?pm.getApplicationIcon(C.getPackageManager().getNameForUid(uid)):null);
-            //Drawable appIcon = pm.getApplicationIcon("com.google.maps");
-          //  Drawable myIcon = getResources().getDrawable( R.drawable.ic_home_wifi );
-            if(totalused>0) {
-                App app = new App(title, totalused + "", icon);
-                appList.add(app);
+            Log.v("fillData", "");
+            apps = db.getAppData2(apps);
+            for (int j = 0; j < apps.length; j++) {
+                int uid = (int) apps[j][0];
+                long totalused = apps[j][1];
+                // Log.v("DAta:" + C.getPackageManager().getNameForUid(uid) , "Used:" +totalused);
+                ApplicationInfo applicationInfo = null;
+                try {
+                    applicationInfo = pm.getApplicationInfo(C.getPackageManager().getNameForUid(uid), 0);
+                } catch (final PackageManager.NameNotFoundException z) {
+                    // z.printStackTrace();
+                }
+                final String title = (String) ((applicationInfo != null) ? pm.getApplicationLabel(applicationInfo) : C.getPackageManager().getNameForUid(uid));
+                Drawable icon = ((applicationInfo != null) ? pm.getApplicationIcon(C.getPackageManager().getNameForUid(uid)) : null);
+                //Drawable appIcon = pm.getApplicationIcon("com.google.maps");
+                //  Drawable myIcon = getResources().getDrawable( R.drawable.ic_home_wifi );
+                if (totalused > 0) {
+                    App app = new App(title, totalused + "", icon);
+                    appList.add(app);
+                }
             }
+            Collections.sort(appList);
         }
-        Collections.sort(appList);
 
        // if(send+received > 0) {
         //    App app = new App(title, send + received + "", icon);
@@ -383,6 +374,63 @@ public class DataFragment extends Fragment {
         long mobileTx = networkStatsHelper.getAllTxBytesMobile(C,s,e);
         Log.d("DataFragment.FillNetSA:","use:"+used+"    "+mobileRx+"    "+mobileTx);
         used = mobileRx + mobileTx;
+        NetworkStatsManager networkStatsManager = (NetworkStatsManager) C.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
+        PackageManager pm = C.getPackageManager();
+        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+        Log.v("DataFragman.fillData:", "Running apps" + packages.size());
+        int size = packages.size();
+        long[][] apps = new long[size][2];
+        int i = 0;
+        for (ApplicationInfo runningApp : packages) {
+            // Get UID of the selected process
+            int uid = runningApp.uid;
+            NetworkStatsHelper nsh= new NetworkStatsHelper(networkStatsManager, uid);
+            apps[i][0] = uid;
+            ApplicationInfo applicationInfo = null;
+            try {
+                applicationInfo = pm.getApplicationInfo(C.getPackageManager().getNameForUid(uid), 0);
+            } catch (final PackageManager.NameNotFoundException z) {
+                // z.printStackTrace();
+            }
+            final String title = (String) ((applicationInfo != null) ? pm.getApplicationLabel(applicationInfo) : C.getPackageManager().getNameForUid(uid));
+            Drawable icon = null;
+            try {
+                icon = ((applicationInfo != null) ? pm.getApplicationIcon(C.getPackageManager().getNameForUid(uid)) : null);
+            } catch (PackageManager.NameNotFoundException e1) {
+                e1.printStackTrace();
+            }
+            Log.v("DataFragman.fillData:", "App:"+  title );
+            long received = nsh.getPackageRxBytesMobile(C,s,e);
+            long send = nsh.getPackageTxBytesMobile(C,s,e);
+            apps[i][1] = send + received;
+            Log.v("DataFragman.fillData:", "App:"+  apps[i][0] +" spend: "+ apps[i][1]);
+            i++;
+        }
+        for (int j = 0; j < apps.length; j++) {
+            int uid = (int) apps[j][0];
+            long totalused = apps[j][1];
+            // Log.v("DAta:" + C.getPackageManager().getNameForUid(uid) , "Used:" +totalused);
+            ApplicationInfo applicationInfo = null;
+            try {
+                applicationInfo = pm.getApplicationInfo(C.getPackageManager().getNameForUid(uid), 0);
+            } catch (final PackageManager.NameNotFoundException z) {
+                // z.printStackTrace();
+            }
+            final String title = (String) ((applicationInfo != null) ? pm.getApplicationLabel(applicationInfo) : C.getPackageManager().getNameForUid(uid));
+            Drawable icon = null;
+            try {
+                icon = ((applicationInfo != null) ? pm.getApplicationIcon(C.getPackageManager().getNameForUid(uid)) : null);
+            } catch (PackageManager.NameNotFoundException e1) {
+                e1.printStackTrace();
+            }
+            //Drawable appIcon = pm.getApplicationIcon("com.google.maps");
+            //  Drawable myIcon = getResources().getDrawable( R.drawable.ic_home_wifi );
+            if (totalused > 0) {
+                App app = new App(title, totalused + "", icon);
+                appList.add(app);
+            }
+        }
+        Collections.sort(appList);
     }
 
 }

@@ -2,6 +2,8 @@ package com.researchfip.puc.mytalks.UI.fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.usage.NetworkStatsManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +27,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.telephony.CellIdentityCdma;
 import android.telephony.CellIdentityGsm;
 import android.telephony.CellIdentityLte;
@@ -55,6 +59,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -63,20 +68,26 @@ import android.widget.Toast;
 import com.researchfip.puc.mytalks.Dialogs.DialogData;
 import com.researchfip.puc.mytalks.R;
 import com.researchfip.puc.mytalks.UI.MainActivity;
+import com.researchfip.puc.mytalks.UI.adapters.objects.App;
 import com.researchfip.puc.mytalks.database.DBPersistence;
 import com.researchfip.puc.mytalks.database.DBPersistence2;
 import com.researchfip.puc.mytalks.database.DataBaseController;
 import com.researchfip.puc.mytalks.database.PhoneData;
 import com.researchfip.puc.mytalks.database.PhoneData2;
+import com.researchfip.puc.mytalks.general.NetworkStatsHelper;
 import com.researchfip.puc.mytalks.general.PhoneInformation;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.security.PublicKey;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import static android.content.Context.TELEPHONY_SERVICE;
@@ -96,6 +107,10 @@ public class HomeFragment extends Fragment {
     int sms = 0;
     int calls = 0;
     private Context C;
+    private ProgressBar prg;
+    private long used = 0;
+    private TextView size, up, pl;
+    String t,s,d;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -108,8 +123,16 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
         C = inflater.getContext();
+        db = new DataBaseController(C);
+        String[] resp = db.getPersonalData();
+        t = resp[2];
+        s = resp[1];
+        d = resp[0];
         totalSMS = (TextView) view.findViewById(R.id.totalSMS);
         totalCalls = (TextView) view.findViewById(R.id.totalCalls);
+        up = (TextView) view.findViewById(R.id.tv_home_maxData);
+        pl = (TextView) view.findViewById(R.id.tv_home_minData);
+        prg = (ProgressBar)view.findViewById(R.id.pb_home_dataUsage);
         try{
             persistence = new DBPersistence2(getActivity());
             db = new DataBaseController(getActivity());
@@ -256,6 +279,81 @@ public class HomeFragment extends Fragment {
 
     }
 
+
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void fillNetworkStatsAll(NetworkStatsHelper networkStatsHelper, long s, long e) {
+        long mobileRx = networkStatsHelper.getAllRxBytesMobile(C,s,e);
+        long mobileTx = networkStatsHelper.getAllTxBytesMobile(C,s,e);
+        Log.d("DataFragment.FillNetSA:","use:"+used+"    "+mobileRx+"    "+mobileTx);
+        used = mobileRx + mobileTx;
+    }
+
+    public void progressBar (){
+        long start, end;
+        //long startTime = calendar.getTimeInMillis();
+        String day = d;
+        Calendar e = Calendar.getInstance();
+        end = e.getTimeInMillis();
+        Calendar st = Calendar.getInstance();
+        int d = e.get(Calendar.DAY_OF_MONTH);
+        int m = e.get(Calendar.MONTH);
+        if( d < Integer.parseInt(day)){
+            if(m == Calendar.JANUARY){
+                st.set(e.get(Calendar.YEAR)+1, Calendar.DECEMBER, Integer.parseInt(day));
+            }else{
+                st.set(e.get(Calendar.YEAR), m - 1, Integer.parseInt(day));
+            }
+        }else{
+            st.set(e.get(Calendar.YEAR), m, Integer.parseInt(day));
+        }
+        Log.d("DataFragment.Bar1","use:"+st.getTime());
+        start = st.getTimeInMillis();
+        try {
+            fillData(start, end);
+        } catch (PackageManager.NameNotFoundException e1) {
+            e1.printStackTrace();
+        }
+
+        float ty = (t.equals("GB")) ? 1073741824 : (t.equals("MB")) ? 1048576 : 1024;
+        float aux = used/ty;
+        if (aux < 0.5){
+            ty = 1048576;
+        }
+        float siz = Float.parseFloat(s)/100;
+        int pb = 0;
+        if(siz != 0) {
+            pb = (int)Math.round((aux / siz));
+        }
+        prg.setProgress(pb);
+        DecimalFormat df = new DecimalFormat("#.###");
+        df.setRoundingMode(RoundingMode.CEILING);
+        if(ty == 1073741824) {
+            up.setText(df.format(aux)+" GB");
+        }else if(ty == 1048576){
+            up.setText(df.format(used/ty)+" MB");
+        }else{
+            up.setText(df.format(aux)+" KB");
+        }
+        if(t.equals("GB")) {
+            pl.setText(df.format(Float.parseFloat(s)-(used/1073741824)) +" GB");
+        }else if(t.equals("MB")){
+            pl.setText(df.format(Float.parseFloat(s)- aux)+" MB");
+        }else{
+            pl.setText(df.format(Float.parseFloat(s)- aux)+" KB");
+        }
+    }
+
+    private void fillData(long s, long e) throws PackageManager.NameNotFoundException {
+        Log.d("DataFragment.Filldata1","filldata");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Log.d("DataFragment.Filldata2:","filldataif");
+            NetworkStatsManager networkStatsManager = (NetworkStatsManager) C.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
+            NetworkStatsHelper networkStatsHelper = new NetworkStatsHelper(networkStatsManager);
+            fillNetworkStatsAll(networkStatsHelper, e, s);
+        }
+    }
+
     public void setDataNumber(View V){
         if (V != null) {
             ViewGroup parent = (ViewGroup) V.getParent();
@@ -279,15 +377,6 @@ public class HomeFragment extends Fragment {
                     long [] l = getTotalBytesManual(uid);
                     long received = l[0];//received amount of each app
                     long send   = l[1];//sent amount of each app
-                   // Log.v("DAta:" + C.getPackageManager().getNameForUid(uid) , "Send :" + send + ", Received :" + received);
-                    // ApplicationInfo applicationInfo = null;
-                    // try {
-                    //     applicationInfo = pm.getApplicationInfo(C.getPackageManager().getNameForUid(uid), 0);
-                    // } catch (final PackageManager.NameNotFoundException z) {
-                    //     z.printStackTrace();
-                    //  }
-                    //  final String title = (String)((applicationInfo != null) ? pm.getApplicationLabel(applicationInfo) : runningApp.packageName);
-                    //  Drawable icon = ((applicationInfo != null)?pm.getApplicationIcon(applicationInfo):null);
                     apps[i][0] = uid;
                     apps[i][1] = send;
                     apps[i][2] = received;

@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.RemoteException;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 /**
  * Created by Robert Zagórski on 2016-09-09.
@@ -135,14 +136,14 @@ public class NetworkStatsHelper {
         return bucket.getTxBytes();
     }
 
-    public long getPackageRxBytesMobile(Context context) {
+    public long getPackageRxBytesMobile(Context context,long start, long end) {
         NetworkStats networkStats = null;
         try {
             networkStats = networkStatsManager.queryDetailsForUid(
                     ConnectivityManager.TYPE_MOBILE,
                     getSubscriberId(context, ConnectivityManager.TYPE_MOBILE),
-                    0,
-                    System.currentTimeMillis(),
+                    start,
+                    end,
                     packageUid);
         } catch (RemoteException e) {
             return -1;
@@ -153,15 +154,17 @@ public class NetworkStatsHelper {
         return bucket.getRxBytes();
     }
 
-    public long getPackageTxBytesMobile(Context context) {
+    public long getPackageTxBytesMobile(Context context,long start, long end) {
         NetworkStats networkStats = null;
         try {
+            Log.v("DataFragman.fillData:", "App: getvalue");
             networkStats = networkStatsManager.queryDetailsForUid(
                     ConnectivityManager.TYPE_MOBILE,
                     getSubscriberId(context, ConnectivityManager.TYPE_MOBILE),
-                    0,
-                    System.currentTimeMillis(),
+                    start,
+                    end,
                     packageUid);
+            Log.v("DataFragman.fillData:", "App:valuerecived");
         } catch (RemoteException e) {
             return -1;
         }

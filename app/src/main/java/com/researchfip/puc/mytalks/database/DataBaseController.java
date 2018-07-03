@@ -521,6 +521,7 @@ public class DataBaseController extends SQLiteOpenHelper {
                     aux = false;
                 }
             }
+            db = this.getWritableDatabase();
             retor = db.rawQuery("SELECT * FROM appuse WHERE uid ="+ apps[i][0], null);
             if(retor.moveToFirst()) {
                 int uid = Integer.parseInt(retor.getString(0));
