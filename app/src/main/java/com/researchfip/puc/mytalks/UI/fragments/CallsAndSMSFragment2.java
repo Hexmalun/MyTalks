@@ -97,8 +97,26 @@ public class CallsAndSMSFragment2 extends Fragment {
              //   Log.d("Clicou:  ",persistence.getTableAsString());
                 final Dialog dialog = new Dialog(getActivity());
                 final Cursor c = (Cursor)(rvTypeEventList.getItemAtPosition(position));
-                String num = c.getColumnName(11)+ "  "+ c.getString(11) +c.getColumnName(12)+"   "+ c.getString(12);
-                Log.d("Clicou:  ",num);
+                final int size = received+send;
+                final int p = position;
+            /*    final Cursor [] c2 = new Cursor[size];
+
+                for(int i =0; i< size;i++){
+                    c2[i] = (Cursor)(rvTypeEventList.getItemAtPosition(i));
+                }
+                String aux = "";
+                String aux2 = "";
+                for (int j = 0; j< c2[0].getColumnCount(); j++){
+                    aux = aux + " - "+ c2[0].getColumnName(j) +": "+ c2[0].getString(j);
+                }
+                for (int j = 0; j< c2[0].getColumnCount(); j++){
+                    aux2 = aux2 + " - "+ c2[1].getColumnName(j) +": "+ c2[1].getString(j);
+                }
+                Log.d("Cursor:  ", aux);
+                Log.d("Cursor2:  ", aux2);
+*/
+               // String num = c.getColumnName(11)+ "  "+ c.getString(11) +c.getColumnName(12)+"   "+ c.getString(12);
+                //Log.d("Clicou:  ",num);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 /////make map clear
                 dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -110,41 +128,72 @@ public class CallsAndSMSFragment2 extends Fragment {
 
                 mMapView.onCreate(dialog.onSaveInstanceState());
                 mMapView.onResume();
-
-
                 mMapView.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(final GoogleMap googleMap) {
-                        double latS =  Double.parseDouble(c.getString(8));
-                        double lonS =  Double.parseDouble(c.getString(9));
-                        double latE = 91;
-                        double lonE = 181;
-                        if(!c.getString(10).equals("")) {
-                            latE = Double.parseDouble(c.getString(12));
-                            lonE = Double.parseDouble(c.getString(13));
-                        }
-                        if(latS == latE && lonS == lonE || latE == 91){
-                            LatLng posisiabsen1 = new LatLng( Double.parseDouble(c.getString(8)), Double.parseDouble(c.getString(9))); ////your lat lng
-                            //LatLng posisiabsen2 = new LatLng(-19.927503, -43.948980); ////your lat lng
-                            Log.d("Saved ",c.getColumnName(4)+c.getString(4));
-                            googleMap.addMarker(new MarkerOptions().position(posisiabsen1)
-                                    .title("From:"+c.getString(5) +"   Time:"+ c.getString(13))
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(posisiabsen1));
-                            googleMap.getUiSettings().setZoomControlsEnabled(true);//
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(posisiabsen1, 15.0f));
-                        }else{
-                            LatLng posisiabsen1 = new LatLng( latS, lonS); ////your lat lng
-                            LatLng posisiabsen2 = new LatLng( latE, latS); ////your lat lng
-                            googleMap.addMarker(new MarkerOptions().position(posisiabsen1)
-                                    .title("From:"+c.getString(4) +"   Start Time:"+ c.getString(13))
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(posisiabsen1));
-                            googleMap.getUiSettings().setZoomControlsEnabled(true);
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(posisiabsen1, 15.0f));
-                            googleMap.addMarker(new MarkerOptions().position(posisiabsen2)
-                                    .title("From:"+c.getString(4) +"   End Time:"+ c.getString(14))
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                        for(int i =0; i< size;i++){
+                            Cursor c = (Cursor)(rvTypeEventList.getItemAtPosition(i));
+                            if(i!= p) {
+                                double latS = Double.parseDouble(c.getString(8));
+                                double lonS = Double.parseDouble(c.getString(9));
+                                double latE = 91;
+                                double lonE = 181;
+                                if (!c.getString(10).equals("")) {
+                                    latE = Double.parseDouble(c.getString(12));
+                                    lonE = Double.parseDouble(c.getString(13));
+                                }
+                                if (latS == latE && lonS == lonE || latE == 91) {
+                                    LatLng posisiabsen1 = new LatLng(Double.parseDouble(c.getString(8)), Double.parseDouble(c.getString(9))); ////your lat lng
+                                    //LatLng posisiabsen2 = new LatLng(-19.927503, -43.948980); ////your lat lng
+                                    Log.d("Saved c2", c.getColumnName(8) + c.getString(8));
+                                    googleMap.addMarker(new MarkerOptions().position(posisiabsen1)
+                                            .title("From:" + c.getString(5) + "   Time:" + c.getString(13))
+                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+                                } else {
+                                    LatLng posisiabsen1 = new LatLng(latS, lonS); ////your lat lng
+                                    LatLng posisiabsen2 = new LatLng(latE, latS); ////your lat lng
+                                    googleMap.addMarker(new MarkerOptions().position(posisiabsen1)
+                                                .title("From:" + c.getString(4) + "   Start Time:" + c.getString(13))
+                                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+                                    googleMap.addMarker(new MarkerOptions().position(posisiabsen2)
+                                                .title("From:" + c.getString(4) + "   End Time:" + c.getString(14))
+                                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                                }
+                            }else{
+                                double latS =  Double.parseDouble(c.getString(8));
+                                double lonS =  Double.parseDouble(c.getString(9));
+                                double latE = 91;
+                                double lonE = 181;
+                                if(!c.getString(10).equals("")) {
+                                    latE = Double.parseDouble(c.getString(12));
+                                    lonE = Double.parseDouble(c.getString(13));
+                                }
+                                if(latS == latE && lonS == lonE || latE == 91){
+                                    LatLng posisiabsen1 = new LatLng( Double.parseDouble(c.getString(8)), Double.parseDouble(c.getString(9))); ////your lat lng
+                                    //LatLng posisiabsen2 = new LatLng(-19.927503, -43.948980); ////your lat lng
+                                    Log.d("Saved ",c.getColumnName(4)+c.getString(4));
+                                    googleMap.addMarker(new MarkerOptions().position(posisiabsen1)
+                                                .title("From:" + c.getString(5) + "   Time:" + c.getString(13))
+                                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(posisiabsen1));
+                                    googleMap.getUiSettings().setZoomControlsEnabled(true);//
+                                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(posisiabsen1, 15.0f));
+                                }else{
+                                    LatLng posisiabsen1 = new LatLng( latS, lonS); ////your lat lng
+                                    LatLng posisiabsen2 = new LatLng( latE, latS); ////your lat lng
+                                    googleMap.addMarker(new MarkerOptions().position(posisiabsen1)
+                                                .title("From:" + c.getString(4) + "   Start Time:" + c.getString(13))
+                                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(posisiabsen1));
+                                    googleMap.getUiSettings().setZoomControlsEnabled(true);
+                                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(posisiabsen1, 15.0f));
+                                    googleMap.addMarker(new MarkerOptions().position(posisiabsen2)
+                                                .title("From:" + c.getString(4) + "   End Time:" + c.getString(14))
+                                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                                }
+
+                            }
+
                         }
 /*
                         LatLng posisiabsen1 = new LatLng(-19.921603, -43.939367); ////your lat lng
@@ -254,6 +303,8 @@ public class CallsAndSMSFragment2 extends Fragment {
         return view;
     }
 
+
+
     public void getReceivedAndSend(Cursor cursor){
         int[] receivedAndSend = new int[2];
         PhoneData2[] phoneData = new PhoneData2[cursor.getCount()];
@@ -338,6 +389,8 @@ public class CallsAndSMSFragment2 extends Fragment {
             }
             return null;
         }
+
+
 
         @Override
         protected void onPostExecute(String s) {

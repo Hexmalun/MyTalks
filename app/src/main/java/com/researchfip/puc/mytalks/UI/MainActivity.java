@@ -27,7 +27,6 @@ import android.widget.Toast;
 import com.researchfip.puc.mytalks.R;
 import com.researchfip.puc.mytalks.Services.CallService;
 import com.researchfip.puc.mytalks.Services.SMSService;
-import com.researchfip.puc.mytalks.UI.fragments.CallsAndSMSFragment;
 import com.researchfip.puc.mytalks.UI.fragments.CallsAndSMSFragment2;
 import com.researchfip.puc.mytalks.UI.fragments.DataFragment;
 import com.researchfip.puc.mytalks.UI.fragments.HelpFragment;
