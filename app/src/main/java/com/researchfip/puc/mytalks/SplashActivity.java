@@ -11,12 +11,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.researchfip.puc.mytalks.Services.CallService;
-import com.researchfip.puc.mytalks.Services.SMSService;
-import com.researchfip.puc.mytalks.Services.getMeasurements;
+import com.researchfip.puc.mytalks.services.CallService;
+import com.researchfip.puc.mytalks.services.SMSService;
+import com.researchfip.puc.mytalks.services.getMeasurements;
 import com.researchfip.puc.mytalks.UI.MainActivity;
 
 public class SplashActivity extends AppCompatActivity {

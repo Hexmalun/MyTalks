@@ -3,7 +3,6 @@ package com.researchfip.puc.mytalks.UI.fragments;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,27 +25,12 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.maps.DirectionsApi;
-import com.google.maps.DirectionsApiRequest;
-import com.google.maps.GeoApiContext;
-import com.google.maps.model.DirectionsLeg;
-import com.google.maps.model.DirectionsResult;
-import com.google.maps.model.DirectionsRoute;
-import com.google.maps.model.DirectionsStep;
-import com.google.maps.model.EncodedPolyline;
 import com.researchfip.puc.mytalks.R;
-import com.researchfip.puc.mytalks.database.DBPersistence;
 import com.researchfip.puc.mytalks.database.DBPersistence2;
-import com.researchfip.puc.mytalks.database.PhoneData;
 import com.researchfip.puc.mytalks.database.PhoneData2;
 import com.researchfip.puc.mytalks.general.PhoneInformation;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by joaocastro on 06/12/17.

@@ -1,4 +1,4 @@
-package com.researchfip.puc.mytalks.Services;
+package com.researchfip.puc.mytalks.services;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,7 +12,7 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(intent.getAction().equalsIgnoreCase("android.intent.action.BOOT_COMPLETED")){
+       // if(intent.getAction().equalsIgnoreCase("android.intent.action.BOOT_COMPLETED")){
             Intent sms_service = new Intent(context, SMSService.class);
             context.startService(sms_service);
 
@@ -21,6 +21,6 @@ public class BootReceiver extends BroadcastReceiver {
 
             Intent measuremets_service = new Intent(context, getMeasurements.class);
             context.startService(measuremets_service);
-        }
+      //  }
     }
 }

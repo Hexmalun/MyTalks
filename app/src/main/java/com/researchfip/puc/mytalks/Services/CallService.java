@@ -1,4 +1,4 @@
-package com.researchfip.puc.mytalks.Services;
+package com.researchfip.puc.mytalks.services;
 
 import android.app.Service;
 import android.content.Intent;

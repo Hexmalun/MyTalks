@@ -1,4 +1,4 @@
-package com.researchfip.puc.mytalks.Services;
+package com.researchfip.puc.mytalks.services;
 
 import android.content.Context;
 import android.database.ContentObserver;

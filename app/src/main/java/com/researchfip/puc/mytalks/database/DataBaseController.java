@@ -516,7 +516,7 @@ public class DataBaseController extends SQLiteOpenHelper {
         long t = Long.parseLong(retor.getString(0));
         for(int i = 0; i < apps.length; i++){
             boolean aux = true;
-            for(int j = i+1; j <apps.length && aux;j++){
+            for(int j = i+1; j < apps.length && aux;j++){
                 if(apps[i][0] == apps[j][0]) {
                     aux = false;
                 }

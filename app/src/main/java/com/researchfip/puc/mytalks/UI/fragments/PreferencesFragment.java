@@ -6,7 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.researchfip.puc.mytalks.Dialogs.DialogData;
 import com.researchfip.puc.mytalks.R;
 
 /**
@@ -24,6 +26,18 @@ public class PreferencesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.settings_fragment, container, false);
+        View view = inflater.inflate(R.layout.settings_fragment, container, false);
+        Button button = (Button) view.findViewById(R.id.upPersonal);
+        button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                DialogData newFragment = new DialogData();
+                newFragment.show(getFragmentManager(), "dataPicker");
+            }
+        });
+        return view;
     }
+
 }

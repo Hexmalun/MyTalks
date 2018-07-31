@@ -1,34 +1,25 @@
 package com.researchfip.puc.mytalks.UI.fragments;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.AppOpsManager;
 import android.app.usage.NetworkStatsManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.telephony.CellIdentityCdma;
 import android.telephony.CellIdentityGsm;
 import android.telephony.CellIdentityLte;
@@ -46,33 +37,19 @@ import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.ActionProvider;
-import android.view.ContextMenu;
 import android.view.InflateException;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.researchfip.puc.mytalks.Dialogs.DialogData;
 import com.researchfip.puc.mytalks.R;
-import com.researchfip.puc.mytalks.UI.MainActivity;
-import com.researchfip.puc.mytalks.UI.adapters.objects.App;
-import com.researchfip.puc.mytalks.database.DBPersistence;
 import com.researchfip.puc.mytalks.database.DBPersistence2;
 import com.researchfip.puc.mytalks.database.DataBaseController;
-import com.researchfip.puc.mytalks.database.PhoneData;
 import com.researchfip.puc.mytalks.database.PhoneData2;
 import com.researchfip.puc.mytalks.general.NetworkStatsHelper;
 import com.researchfip.puc.mytalks.general.PhoneInformation;
@@ -82,15 +59,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.RoundingMode;
-import java.security.PublicKey;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
-
-import static android.content.Context.TELEPHONY_SERVICE;
 
 /**
  * Created by joaocastro on 23/10/17.
@@ -124,10 +96,6 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
         C = inflater.getContext();
         db = new DataBaseController(C);
-        String[] resp = db.getPersonalData();
-        t = resp[2];
-        s = resp[1];
-        d = resp[0];
         totalSMS = (TextView) view.findViewById(R.id.totalSMS);
         totalCalls = (TextView) view.findViewById(R.id.totalCalls);
         up = (TextView) view.findViewById(R.id.tv_home_maxData);
@@ -143,6 +111,14 @@ public class HomeFragment extends Fragment {
         getSignalInfo(view);
         changeIVWifiStrength(view);
         setDataNumber(view);
+        progressBar ();
+        AppOpsManager appOps = (AppOpsManager) C.getSystemService(Context.APP_OPS_SERVICE);
+        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                android.os.Process.myUid(), C.getPackageName());
+        if (mode != AppOpsManager.MODE_ALLOWED) {
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivity(intent);
+        }
         return view;
     }
 
@@ -291,56 +267,62 @@ public class HomeFragment extends Fragment {
 
     public void progressBar (){
         long start, end;
-        //long startTime = calendar.getTimeInMillis();
-        String day = d;
-        Calendar e = Calendar.getInstance();
-        end = e.getTimeInMillis();
-        Calendar st = Calendar.getInstance();
-        int d = e.get(Calendar.DAY_OF_MONTH);
-        int m = e.get(Calendar.MONTH);
-        if( d < Integer.parseInt(day)){
-            if(m == Calendar.JANUARY){
-                st.set(e.get(Calendar.YEAR)+1, Calendar.DECEMBER, Integer.parseInt(day));
-            }else{
-                st.set(e.get(Calendar.YEAR), m - 1, Integer.parseInt(day));
+        String[] resp = db.getPersonalData();
+        if (resp.length != 1) {
+            t = resp[2];
+            s = resp[1];
+            d = resp[0];
+            //long startTime = calendar.getTimeInMillis();
+            String day = d;
+            Calendar e = Calendar.getInstance();
+            end = e.getTimeInMillis();
+            Calendar st = Calendar.getInstance();
+            int d = e.get(Calendar.DAY_OF_MONTH);
+            int m = e.get(Calendar.MONTH);
+            if (d < Integer.parseInt(day)) {
+                if (m == Calendar.JANUARY) {
+                    st.set(e.get(Calendar.YEAR) + 1, Calendar.DECEMBER, Integer.parseInt(day));
+                } else {
+                    st.set(e.get(Calendar.YEAR), m - 1, Integer.parseInt(day));
+                }
+            } else {
+                st.set(e.get(Calendar.YEAR), m, Integer.parseInt(day));
             }
-        }else{
-            st.set(e.get(Calendar.YEAR), m, Integer.parseInt(day));
-        }
-        Log.d("DataFragment.Bar1","use:"+st.getTime());
-        start = st.getTimeInMillis();
-        try {
-            fillData(start, end);
-        } catch (PackageManager.NameNotFoundException e1) {
-            e1.printStackTrace();
-        }
+            Log.d("DataFragment.Bar1", "use:" + st.getTime());
+            start = st.getTimeInMillis();
+            try {
+                fillData(start, end);
+            } catch (PackageManager.NameNotFoundException e1) {
+                e1.printStackTrace();
+            }
 
-        float ty = (t.equals("GB")) ? 1073741824 : (t.equals("MB")) ? 1048576 : 1024;
-        float aux = used/ty;
-        if (aux < 0.5){
-            ty = 1048576;
-        }
-        float siz = Float.parseFloat(s)/100;
-        int pb = 0;
-        if(siz != 0) {
-            pb = (int)Math.round((aux / siz));
-        }
-        prg.setProgress(pb);
-        DecimalFormat df = new DecimalFormat("#.###");
-        df.setRoundingMode(RoundingMode.CEILING);
-        if(ty == 1073741824) {
-            up.setText(df.format(aux)+" GB");
-        }else if(ty == 1048576){
-            up.setText(df.format(used/ty)+" MB");
-        }else{
-            up.setText(df.format(aux)+" KB");
-        }
-        if(t.equals("GB")) {
-            pl.setText(df.format(Float.parseFloat(s)-(used/1073741824)) +" GB");
-        }else if(t.equals("MB")){
-            pl.setText(df.format(Float.parseFloat(s)- aux)+" MB");
-        }else{
-            pl.setText(df.format(Float.parseFloat(s)- aux)+" KB");
+            float ty = (t.equals("GB")) ? 1073741824 : (t.equals("MB")) ? 1048576 : 1024;
+            float aux = used / ty;
+            if (aux < 0.5) {
+                ty = 1048576;
+            }
+            float siz = Float.parseFloat(s) / 100;
+            int pb = 0;
+            if (siz != 0) {
+                pb = (int) Math.round((aux / siz));
+            }
+            prg.setProgress(pb);
+            DecimalFormat df = new DecimalFormat("#.###");
+            df.setRoundingMode(RoundingMode.CEILING);
+            if (ty == 1073741824) {
+                up.setText(df.format(aux) + " GB");
+            } else if (ty == 1048576) {
+                up.setText(df.format(used / ty) + " MB");
+            } else {
+                up.setText(df.format(aux) + " KB");
+            }
+            if (t.equals("GB")) {
+                pl.setText(df.format(Float.parseFloat(s) - (used / 1073741824)) + " GB");
+            } else if (t.equals("MB")) {
+                pl.setText(df.format(Float.parseFloat(s) - aux) + " MB");
+            } else {
+                pl.setText(df.format(Float.parseFloat(s) - aux) + " KB");
+            }
         }
     }
 
@@ -362,6 +344,7 @@ public class HomeFragment extends Fragment {
         }
         try {
             String[] resp = db.getPersonalData();
+            Log.d("setDataNumber:","filldataif");
             if (resp.length <= 1) {
                 DialogData newFragment = new DialogData();
                 newFragment.show(getFragmentManager(), "dataPicker");
@@ -385,8 +368,10 @@ public class HomeFragment extends Fragment {
                 }
               //  Log.v("DataFragman.fillData:", "Running apps" + apps.length);
                 db.addAllAppData(apps);
+                Log.d("setDataNumber:","resp");
             }
         }catch(InflateException e){
+            Log.d("setDataNumber:",e.getMessage());
         }
 
     }

@@ -13,6 +13,9 @@ import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 /**
  * Created by Robert Zagórski on 2016-09-09.
  */
@@ -74,7 +77,6 @@ public class NetworkStatsHelper {
                 return 0;
             }
             String subscriberID = tm.getSubscriberId();
-
             bucket = networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_MOBILE,
                     subscriberID,
                     start,
@@ -151,7 +153,51 @@ public class NetworkStatsHelper {
         NetworkStats.Bucket bucket = new NetworkStats.Bucket();
         networkStats.getNextBucket(bucket);
         networkStats.getNextBucket(bucket);
+        String TAG = "getPackageRxBytesMobile";
+        Log.d(TAG, "Bytes Recieved" + bucket.getRxBytes());
+        Log.d(TAG, "Bytes Transfered" + bucket.getTxBytes());
+        Log.d(TAG, "Bucket UID " + bucket.getUid()+" "+packageUid);
+        Log.d(TAG,"StartTime: "+bucket.getStartTimeStamp()+" "+start);
+        Log.d(TAG,"EndTime: "+bucket.getEndTimeStamp()+" "+end);
         return bucket.getRxBytes();
+    }
+
+    public long getPackageBytesMobile(Context context,long start, long end) {
+        long usage = 0L;
+
+        NetworkStats networkStatsByApp;
+        NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
+
+        try {
+            networkStatsByApp = networkStatsManager.querySummary(ConnectivityManager.TYPE_MOBILE, getSubscriberId(context, ConnectivityManager.TYPE_MOBILE), start, System.currentTimeMillis());
+            do {
+                NetworkStats.Bucket bucket = new NetworkStats.Bucket();
+                networkStatsByApp.getNextBucket(bucket);
+                if (bucket.getUid() == packageUid) {
+                    // in some devices this is immediately looping twice
+                    // and the second iteration is returning correct value.
+                    // So result is returned in the end.
+                    usage = (bucket.getRxBytes() + bucket.getTxBytes());
+                    // Create a DateFormatter object for displaying date in specified format.
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
+
+                    // Create a calendar object that will convert the date and time value in milliseconds to date.
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(bucket.getStartTimeStamp());
+                    Calendar calendar2 = Calendar.getInstance();
+                    calendar2.setTimeInMillis(start);
+                    //Log.d("Poatata","StartTime: "+formatter.format(calendar.getTime())+"  "+formatter.format(calendar2.getTime()));
+                    calendar.setTimeInMillis(bucket.getEndTimeStamp());
+                   // Log.d("Poatata","End: "+formatter.format(calendar.getTime()));
+                }
+            } while (networkStatsByApp.hasNextBucket());
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        return usage;
+
     }
 
     public long getPackageTxBytesMobile(Context context,long start, long end) {

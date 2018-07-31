@@ -1,7 +1,6 @@
-package com.researchfip.puc.mytalks.Services;
+package com.researchfip.puc.mytalks.services;
 
 import android.Manifest;
-import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,7 +12,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
-import android.net.TrafficStats;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -34,7 +32,6 @@ import android.telephony.CellSignalStrengthWcdma;
 import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -43,8 +40,6 @@ import com.researchfip.puc.mytalks.UI.MainActivity;
 import com.researchfip.puc.mytalks.database.Cell;
 import com.researchfip.puc.mytalks.database.DataBaseController;
 import com.researchfip.puc.mytalks.database.SendData;
-
-import java.util.List;
 
 /**
  * Created by Mateus on 10/06/2016.

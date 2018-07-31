@@ -2,17 +2,14 @@ package com.researchfip.puc.mytalks.UI.fragments;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.app.usage.NetworkStatsManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.TrafficStats;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -40,9 +37,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,16 +50,18 @@ import com.researchfip.puc.mytalks.general.NetworkStatsHelper;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import mobi.gspd.segmentedbarview.Segment;
 import mobi.gspd.segmentedbarview.SegmentedBarView;
@@ -86,6 +83,7 @@ public class DataFragment extends Fragment {
     private long used = 0;
     private TextView size, up, pl,date,min;
     String t,s,d;
+    long s_D;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -253,8 +251,11 @@ public class DataFragment extends Fragment {
             Log.d("DataFragment.Filldata2:","filldataif");
             NetworkStatsManager networkStatsManager = (NetworkStatsManager) C.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
             NetworkStatsHelper networkStatsHelper = new NetworkStatsHelper(networkStatsManager);
-            fillNetworkStatsAll(networkStatsHelper, e, s);
-        }else {
+             s_D = s;
+            fillNetworkStatsAll(networkStatsHelper, e, s_D);
+            Calendar calendar3 = Calendar.getInstance();
+            calendar3.setTimeInMillis(s);
+          }else{
             PackageManager pm = C.getPackageManager();
             List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
             Log.v("DataFragman.fillData:", "Running apps" + packages.size());
@@ -292,6 +293,9 @@ public class DataFragment extends Fragment {
                     appList.add(app);
                 }
             }
+            Set<App> depdupeCustomers = new LinkedHashSet<>(appList);
+            appList.clear();
+            appList.addAll(depdupeCustomers);
             Collections.sort(appList);
         }
 
@@ -369,15 +373,16 @@ public class DataFragment extends Fragment {
 
 
     @TargetApi(Build.VERSION_CODES.M)
-    private void fillNetworkStatsAll(NetworkStatsHelper networkStatsHelper, long s, long e) {
-        long mobileRx = networkStatsHelper.getAllRxBytesMobile(C,s,e);
-        long mobileTx = networkStatsHelper.getAllTxBytesMobile(C,s,e);
-        Log.d("DataFragment.FillNetSA:","use:"+used+"    "+mobileRx+"    "+mobileTx);
+    private long [][] fillNetworkStatsAll(NetworkStatsHelper networkStatsHelper, long s, long e) {
+        s = s_D;
+        long mobileRx = networkStatsHelper.getAllRxBytesMobile(C,s_D,e);
+        long mobileTx = networkStatsHelper.getAllTxBytesMobile(C,s_D,e);
+      //  Log.d("DataFragment.FillNetSA:","use:"+used+"    "+mobileRx+"    "+mobileTx);
         used = mobileRx + mobileTx;
         NetworkStatsManager networkStatsManager = (NetworkStatsManager) C.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
         PackageManager pm = C.getPackageManager();
         List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-        Log.v("DataFragman.fillData:", "Running apps" + packages.size());
+     //   Log.d("DataFragman.fillData:", "Running apps" + packages.size());
         int size = packages.size();
         long[][] apps = new long[size][2];
         int i = 0;
@@ -399,11 +404,13 @@ public class DataFragment extends Fragment {
             } catch (PackageManager.NameNotFoundException e1) {
                 e1.printStackTrace();
             }
-            Log.v("DataFragman.fillData:", "App:"+  title );
-            long received = nsh.getPackageRxBytesMobile(C,s,e);
+          //  Log.d("DataFragman.fillData:", "App:"+  title );
+
+
+            long received = nsh.getPackageBytesMobile(C,s,e);
             long send = nsh.getPackageTxBytesMobile(C,s,e);
-            apps[i][1] = send + received;
-            Log.v("DataFragman.fillData:", "App:"+  apps[i][0] +" spend: "+ apps[i][1]);
+            apps[i][1] = received;
+        //    Log.d("DataFragman.fillData:", "App:"+title+"  "+  apps[i][0] +" spend: "+ apps[i][1]);
             i++;
         }
         for (int j = 0; j < apps.length; j++) {
@@ -431,6 +438,21 @@ public class DataFragment extends Fragment {
             }
         }
         Collections.sort(appList);
+        List<App> appListaux = new ArrayList<>();
+        for (int k = 0; k<appList.size(); k++){
+            boolean aux = true;
+            for (int l = 0; l<appListaux.size(); l++){
+                if (appList.get(k).getUsage().equals(appListaux.get(l).getUsage())){
+                    aux = false;
+                    l = appListaux.size();
+                }
+            }
+           if(aux){
+                appListaux.add(appList.get(k));
+           }
+        }
+        appList = appListaux;
+        return apps;
     }
 
 }

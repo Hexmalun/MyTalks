@@ -41,27 +41,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <receiver android:name=".Services.BootReceiver">
+
+        <receiver
+            android:name="services.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".Services.IncomingSMSReceiver">
+
+        <receiver android:name=".services.IncomingSMSReceiver">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".Services.SMSService"></service>
+        <service android:name=".services.SMSService"></service>
+
         <service
-            android:name=".Services.CallService"
+            android:name=".services.CallService"
             android:enabled="true"
             android:exported="false"></service>
 
         <service
-            android:name=".Services.getMeasurements"
+            android:name=".services.getMeasurements"
             android:exported="false"></service>
 
         <activity android:name=".SplashActivity">

@@ -109,7 +109,7 @@ public class DialogData extends DialogFragment {
                 {
                     if(et.getText().toString().length() <= 0){
                         Toast.makeText(C, "Tamanho do Pacode Invalidos", Toast.LENGTH_SHORT).show();
-                    }else if (Integer.parseInt(et.getText().toString()) <=0){
+                    }else if (Double.parseDouble(et.getText().toString()) <=0){
                         Toast.makeText(C, "Tamanho do Pacode Invalidos", Toast.LENGTH_SHORT).show();
                     }else{
                         c = new Cell();

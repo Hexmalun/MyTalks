@@ -1,32 +1,20 @@
 package com.researchfip.puc.mytalks.UI;
 
-import android.Manifest;
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.researchfip.puc.mytalks.R;
-import com.researchfip.puc.mytalks.Services.CallService;
-import com.researchfip.puc.mytalks.Services.SMSService;
 import com.researchfip.puc.mytalks.UI.fragments.CallsAndSMSFragment2;
 import com.researchfip.puc.mytalks.UI.fragments.DataFragment;
 import com.researchfip.puc.mytalks.UI.fragments.HelpFragment;
@@ -46,7 +34,6 @@ public class MainActivity extends AppCompatActivity
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

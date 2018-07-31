@@ -1,7 +1,6 @@
 package com.researchfip.puc.mytalks.UI.adapters.objects;
 
 import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
 
 /**
  * Created by joaocastro on 01/11/17.
