@@ -47,6 +47,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.researchfip.puc.mytalks.Dialogs.DialogData;
+import com.researchfip.puc.mytalks.Dialogs.DialogPermission;
 import com.researchfip.puc.mytalks.R;
 import com.researchfip.puc.mytalks.database.DBPersistence2;
 import com.researchfip.puc.mytalks.database.DataBaseController;
@@ -111,13 +112,19 @@ public class HomeFragment extends Fragment {
         getSignalInfo(view);
         changeIVWifiStrength(view);
         setDataNumber(view);
-        progressBar ();
         AppOpsManager appOps = (AppOpsManager) C.getSystemService(Context.APP_OPS_SERVICE);
         int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
                 android.os.Process.myUid(), C.getPackageName());
         if (mode != AppOpsManager.MODE_ALLOWED) {
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             startActivity(intent);
+        }
+        if (mode == AppOpsManager.MODE_ALLOWED) {
+            progressBar ();
+        } else if (mode != AppOpsManager.MODE_ALLOWED) {
+            DialogPermission newFragment = new DialogPermission();
+            newFragment.show(getFragmentManager(), "permissions");
+            progressBar ();
         }
         return view;
     }

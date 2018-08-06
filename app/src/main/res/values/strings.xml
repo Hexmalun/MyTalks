@@ -85,6 +85,7 @@
     <string name="dataFirst">Escolha a data de inicio e o tamanho do seu plano: </string>
 
 
+    <string name="permission">Please allow the application to access the data so that is possible to show the use.</string>
     <string name="intro_text">This sample demonstrates how a notification is created using the
         <b>NotificationCompatBuilder</b>
         with a custom content view. The layout of the notification is defined as a
