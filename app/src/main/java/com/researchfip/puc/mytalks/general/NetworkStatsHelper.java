@@ -220,10 +220,8 @@ public class NetworkStatsHelper {
 
     public long getAllPackageBytesMobile(Context context,long start, long end) {
         long usage = 0L;
-
         NetworkStats networkStatsByApp;
         NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
-
         try {
             networkStatsByApp = networkStatsManager.querySummary(ConnectivityManager.TYPE_MOBILE, getSubscriberId(context, ConnectivityManager.TYPE_MOBILE), start, System.currentTimeMillis());
             do {
@@ -231,13 +229,10 @@ public class NetworkStatsHelper {
                 networkStatsByApp.getNextBucket(bucket);
                 usage = usage + (bucket.getRxBytes() + bucket.getTxBytes());
             } while (networkStatsByApp.hasNextBucket());
-
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
         return usage;
-
     }
 
     public long getPackageRxBytesWifi() {

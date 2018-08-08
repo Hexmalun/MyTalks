@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -50,7 +49,6 @@ import android.widget.TextView;
 import com.researchfip.puc.mytalks.Dialogs.DialogData;
 import com.researchfip.puc.mytalks.Dialogs.DialogPermission;
 import com.researchfip.puc.mytalks.R;
-import com.researchfip.puc.mytalks.UI.adapters.objects.App;
 import com.researchfip.puc.mytalks.database.DBPersistence2;
 import com.researchfip.puc.mytalks.database.DataBaseController;
 import com.researchfip.puc.mytalks.database.PhoneData2;
@@ -63,10 +61,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -126,7 +123,7 @@ public class HomeFragment extends Fragment {
         if (mode == AppOpsManager.MODE_ALLOWED) {
             progressBar ();
         }
-        Log.d("BAtataaaa", "Entrou");
+
         return view;
     }
 
@@ -267,9 +264,12 @@ public class HomeFragment extends Fragment {
 
     @TargetApi(Build.VERSION_CODES.M)
     private void fillNetworkStatsAll(NetworkStatsHelper networkStatsHelper, long s, long e) {
-        long mobileRx = networkStatsHelper.getAllRxBytesMobile(C,s,e);
-        long mobileTx = networkStatsHelper.getAllTxBytesMobile(C,s,e);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(s);
+        String formattedDate = formatter.format(calendar.getTime());
         used = networkStatsHelper.getAllPackageBytesMobile(C,s,e);
+        Log.d("BAtataaaa", ""+used+" "+formattedDate);
     }
 
     public void progressBar (){
@@ -288,12 +288,12 @@ public class HomeFragment extends Fragment {
             int m = e.get(Calendar.MONTH);
             if (d < Integer.parseInt(day)) {
                 if (m == Calendar.JANUARY) {
-                    st.set(e.get(Calendar.YEAR) + 1, Calendar.DECEMBER, Integer.parseInt(day));
+                    st.set(e.get(Calendar.YEAR) + 1, Calendar.DECEMBER, Integer.parseInt(day),0,0);
                 } else {
-                    st.set(e.get(Calendar.YEAR), m - 1, Integer.parseInt(day));
+                    st.set(e.get(Calendar.YEAR), m - 1, Integer.parseInt(day),0,0);
                 }
             } else {
-                st.set(e.get(Calendar.YEAR), m, Integer.parseInt(day));
+                st.set(e.get(Calendar.YEAR), m, Integer.parseInt(day),0,0);
             }
             Log.d("DataFragment.Bar1", "use:" + st.getTime());
             start = st.getTimeInMillis();
@@ -303,31 +303,32 @@ public class HomeFragment extends Fragment {
                 e1.printStackTrace();
             }
             float ty = (t.equals("GB")) ? 1073741824 : (t.equals("MB")) ? 1048576 : 1024;
-            float aux = used / ty;
-            if (aux < 0.5) {
+            float aux = used/ty;
+            if (aux < 0.5){
                 ty = 1048576;
             }
-            float siz = Float.parseFloat(s) / 100;
+            float siz = Float.parseFloat(s)/100;
             int pb = 0;
-            if (siz != 0) {
-                pb = (int) Math.round((aux / siz));
+            if(siz != 0) {
+                pb = (int)Math.round((aux / siz));
             }
             prg.setProgress(pb);
             DecimalFormat df = new DecimalFormat("#.###");
             df.setRoundingMode(RoundingMode.CEILING);
-            if (ty == 1073741824) {
-                up.setText(df.format(aux) + " GB");
-            } else if (ty == 1048576) {
-                up.setText(df.format(used / ty) + " MB");
-            } else {
-                up.setText(df.format(aux) + " KB");
+            if(ty == 1073741824) {
+                up.setText(df.format(aux)+" GB");
+            }else if(ty == 1048576){
+                up.setText(df.format(used/ty)+" MB");
+            }else{
+                up.setText(df.format(aux)+" KB");
             }
-            if (t.equals("GB")) {
-                pl.setText(df.format(Float.parseFloat(s) - (used / 1073741824)) + " GB");
-            } else if (t.equals("MB")) {
-                pl.setText(df.format(Float.parseFloat(s) - aux) + " MB");
-            } else {
-                pl.setText(df.format(Float.parseFloat(s) - aux) + " KB");
+
+            if(t.equals("GB")) {
+                pl.setText(df.format(Float.parseFloat(s)-(used/1073741824)) +" GB");
+            }else if(t.equals("MB")){
+                pl.setText(df.format(Float.parseFloat(s)- aux)+" MB");
+            }else{
+                pl.setText(df.format(Float.parseFloat(s)- aux)+" KB");
             }
         }
     }
@@ -338,7 +339,7 @@ public class HomeFragment extends Fragment {
             Log.d("DataFragment.Filldata2:","filldataif");
             NetworkStatsManager networkStatsManager = (NetworkStatsManager) C.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
             NetworkStatsHelper networkStatsHelper = new NetworkStatsHelper(networkStatsManager);
-            fillNetworkStatsAll(networkStatsHelper, e, s);
+            fillNetworkStatsAll(networkStatsHelper, s, e);
         }
     }
 

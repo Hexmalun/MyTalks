@@ -252,7 +252,7 @@ public class DataFragment extends Fragment {
             NetworkStatsManager networkStatsManager = (NetworkStatsManager) C.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
             NetworkStatsHelper networkStatsHelper = new NetworkStatsHelper(networkStatsManager);
              s_D = s;
-            fillNetworkStatsAll(networkStatsHelper, e, s_D);
+            fillNetworkStatsAll(networkStatsHelper, s, e);
           }else{
             PackageManager pm = C.getPackageManager();
             List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
@@ -373,10 +373,8 @@ public class DataFragment extends Fragment {
     @TargetApi(Build.VERSION_CODES.M)
     private long [][] fillNetworkStatsAll(NetworkStatsHelper networkStatsHelper, long s, long e) {
         s = s_D;
-        long mobileRx = networkStatsHelper.getAllRxBytesMobile(C,s_D,e);
-        long mobileTx = networkStatsHelper.getAllTxBytesMobile(C,s_D,e);
         used = networkStatsHelper.getAllPackageBytesMobile(C,s_D,e);
-      //Log.d("DataFragment.FillNetSA:","use:"+used+"    "+mobileRx+"    "+mobileTx);
+      Log.d("DataFragment.FillNetSA:","use:"+used);
       //  used = mobileRx + mobileTx;
         long u = 0;
         NetworkStatsManager networkStatsManager = (NetworkStatsManager) C.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
