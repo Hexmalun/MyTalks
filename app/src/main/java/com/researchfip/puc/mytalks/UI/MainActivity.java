@@ -1,5 +1,6 @@
 package com.researchfip.puc.mytalks.UI;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -47,6 +48,15 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Intent sms_service = new Intent(this, com.researchfip.puc.mytalks.services.SMSService.class);
+        startService(sms_service);
+
+        Intent call_service = new Intent(this, com.researchfip.puc.mytalks.services.CallService.class);
+        startService(call_service);
+
+        Intent measuremets_service = new Intent(this, com.researchfip.puc.mytalks.services.getMeasurements.class);
+        startService(measuremets_service);
 
         ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.content_main, new HomeFragment(),"My Talks");

@@ -1,9 +1,12 @@
 package com.researchfip.puc.mytalks.Dialogs;
 
+import android.app.AppOpsManager;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -44,29 +47,22 @@ public class DialogPermission extends DialogFragment {
         // Pass null as the parent view because its going in the dialog layout
         V =inflater.inflate(R.layout.dialog_permission, null);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(C,
-                R.array.dates, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(C,
-                R.array.types, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        et = (EditText) V.findViewById(R.id.editTextD);
-        n = (EditText) V.findViewById(R.id.number);
-        BrPhoneNumberFormatter addLineNumberFormatter = new BrPhoneNumberFormatter(new WeakReference<EditText>(n));
-        n.addTextChangedListener(addLineNumberFormatter);
-        builder.setTitle("Dados do Plano:");
+        builder.setTitle("@string/permission");
         builder.setView(V)
                 // Add action buttons
-                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-
+                        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                        startActivity(intent);
                     }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
 
-                });
+                            }
+                        });
 
         // Create the AlertDialog object and return it
         return builder.create();
@@ -88,25 +84,34 @@ public class DialogPermission extends DialogFragment {
     public void onStart()
     {
         super.onStart();
-        AlertDialog d = (AlertDialog)getDialog();
+        final AlertDialog d = (AlertDialog)getDialog();
         if(d != null)
         {
             Button positiveButton = (Button) d.getButton(Dialog.BUTTON_POSITIVE);
             positiveButton.setOnClickListener(new View.OnClickListener()
             {
                 @Override
-                public void onClick(View v)
-                {
-                    if(et.getText().toString().length() <= 0){
-                        Toast.makeText(C, "Tamanho do Pacode Invalidos", Toast.LENGTH_SHORT).show();
-                    }else if (Double.parseDouble(et.getText().toString()) <=0){
-                        Toast.makeText(C, "Tamanho do Pacode Invalidos", Toast.LENGTH_SHORT).show();
-                    }else{
-                        c = new Cell();
-                        c.setData(et.getText().toString());
-                        dismiss();
-                    }
+                public void onClick(View v){
+                    Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                    startActivity(intent);
+                    d.dismiss();
+                }
+            });
+            Button negativeButton = (Button) d.getButton(Dialog.BUTTON_NEGATIVE);
+            negativeButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v){
+                    d.dismiss();
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(C);
+                    dialog.setMessage("If you want to have better information go to the preferences and allow the app to see others.");
+                    dialog.setPositiveButton(" OK ", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
 
+                        }
+                    });
+                    dialog.show();
                 }
             });
         }

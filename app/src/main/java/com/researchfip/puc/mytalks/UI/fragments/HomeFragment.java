@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -49,6 +50,7 @@ import android.widget.TextView;
 import com.researchfip.puc.mytalks.Dialogs.DialogData;
 import com.researchfip.puc.mytalks.Dialogs.DialogPermission;
 import com.researchfip.puc.mytalks.R;
+import com.researchfip.puc.mytalks.UI.adapters.objects.App;
 import com.researchfip.puc.mytalks.database.DBPersistence2;
 import com.researchfip.puc.mytalks.database.DataBaseController;
 import com.researchfip.puc.mytalks.database.PhoneData2;
@@ -61,8 +63,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -116,16 +120,13 @@ public class HomeFragment extends Fragment {
         int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
                 android.os.Process.myUid(), C.getPackageName());
         if (mode != AppOpsManager.MODE_ALLOWED) {
-            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-            startActivity(intent);
+            DialogPermission newFragment = new DialogPermission();
+            newFragment.show(getFragmentManager(), "dataPermissions");
         }
         if (mode == AppOpsManager.MODE_ALLOWED) {
             progressBar ();
-        } else if (mode != AppOpsManager.MODE_ALLOWED) {
-            DialogPermission newFragment = new DialogPermission();
-            newFragment.show(getFragmentManager(), "permissions");
-            progressBar ();
         }
+        Log.d("BAtataaaa", "Entrou");
         return view;
     }
 
@@ -268,8 +269,7 @@ public class HomeFragment extends Fragment {
     private void fillNetworkStatsAll(NetworkStatsHelper networkStatsHelper, long s, long e) {
         long mobileRx = networkStatsHelper.getAllRxBytesMobile(C,s,e);
         long mobileTx = networkStatsHelper.getAllTxBytesMobile(C,s,e);
-        Log.d("DataFragment.FillNetSA:","use:"+used+"    "+mobileRx+"    "+mobileTx);
-        used = mobileRx + mobileTx;
+        used = networkStatsHelper.getAllPackageBytesMobile(C,s,e);
     }
 
     public void progressBar (){
@@ -302,7 +302,6 @@ public class HomeFragment extends Fragment {
             } catch (PackageManager.NameNotFoundException e1) {
                 e1.printStackTrace();
             }
-
             float ty = (t.equals("GB")) ? 1073741824 : (t.equals("MB")) ? 1048576 : 1024;
             float aux = used / ty;
             if (aux < 0.5) {
@@ -446,4 +445,14 @@ public class HomeFragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        AppOpsManager appOps = (AppOpsManager) C.getSystemService(Context.APP_OPS_SERVICE);
+        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                android.os.Process.myUid(), C.getPackageName());
+        if (mode == AppOpsManager.MODE_ALLOWED) {
+            progressBar ();
+        }
+        super.onResume();
+    }
 }

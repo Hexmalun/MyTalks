@@ -199,12 +199,12 @@ public class DataFragment extends Fragment {
         int m = e.get(Calendar.MONTH);
         if( d < Integer.parseInt(day)){
             if(m == Calendar.JANUARY){
-                st.set(e.get(Calendar.YEAR)+1, Calendar.DECEMBER, Integer.parseInt(day));
+                st.set(e.get(Calendar.YEAR)+1, Calendar.DECEMBER, Integer.parseInt(day),0,0);
             }else{
-                st.set(e.get(Calendar.YEAR), m - 1, Integer.parseInt(day));
+                st.set(e.get(Calendar.YEAR), m - 1, Integer.parseInt(day),0,0);
             }
         }else{
-            st.set(e.get(Calendar.YEAR), m, Integer.parseInt(day));
+            st.set(e.get(Calendar.YEAR), m, Integer.parseInt(day),0,0);
         }
         Log.d("DataFragment.Bar1","use:"+st.getTime());
         start = st.getTimeInMillis();
@@ -253,8 +253,6 @@ public class DataFragment extends Fragment {
             NetworkStatsHelper networkStatsHelper = new NetworkStatsHelper(networkStatsManager);
              s_D = s;
             fillNetworkStatsAll(networkStatsHelper, e, s_D);
-            Calendar calendar3 = Calendar.getInstance();
-            calendar3.setTimeInMillis(s);
           }else{
             PackageManager pm = C.getPackageManager();
             List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
@@ -377,12 +375,14 @@ public class DataFragment extends Fragment {
         s = s_D;
         long mobileRx = networkStatsHelper.getAllRxBytesMobile(C,s_D,e);
         long mobileTx = networkStatsHelper.getAllTxBytesMobile(C,s_D,e);
-      //  Log.d("DataFragment.FillNetSA:","use:"+used+"    "+mobileRx+"    "+mobileTx);
-        used = mobileRx + mobileTx;
+        used = networkStatsHelper.getAllPackageBytesMobile(C,s_D,e);
+      //Log.d("DataFragment.FillNetSA:","use:"+used+"    "+mobileRx+"    "+mobileTx);
+      //  used = mobileRx + mobileTx;
+        long u = 0;
         NetworkStatsManager networkStatsManager = (NetworkStatsManager) C.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
         PackageManager pm = C.getPackageManager();
         List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-     //   Log.d("DataFragman.fillData:", "Running apps" + packages.size());
+     // Log.d("DataFragman.fillData:", "Running apps" + packages.size());
         int size = packages.size();
         long[][] apps = new long[size][2];
         int i = 0;
@@ -397,16 +397,7 @@ public class DataFragment extends Fragment {
             } catch (final PackageManager.NameNotFoundException z) {
                 // z.printStackTrace();
             }
-            final String title = (String) ((applicationInfo != null) ? pm.getApplicationLabel(applicationInfo) : C.getPackageManager().getNameForUid(uid));
-            Drawable icon = null;
-            try {
-                icon = ((applicationInfo != null) ? pm.getApplicationIcon(C.getPackageManager().getNameForUid(uid)) : null);
-            } catch (PackageManager.NameNotFoundException e1) {
-                e1.printStackTrace();
-            }
           //  Log.d("DataFragman.fillData:", "App:"+  title );
-
-
             long received = nsh.getPackageBytesMobile(C,s,e);
             long send = nsh.getPackageTxBytesMobile(C,s,e);
             apps[i][1] = received;

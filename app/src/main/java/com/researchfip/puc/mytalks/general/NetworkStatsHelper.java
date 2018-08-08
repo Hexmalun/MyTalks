@@ -180,7 +180,6 @@ public class NetworkStatsHelper {
                     usage = (bucket.getRxBytes() + bucket.getTxBytes());
                     // Create a DateFormatter object for displaying date in specified format.
                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
-
                     // Create a calendar object that will convert the date and time value in milliseconds to date.
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(bucket.getStartTimeStamp());
@@ -219,6 +218,28 @@ public class NetworkStatsHelper {
         return bucket.getTxBytes();
     }
 
+    public long getAllPackageBytesMobile(Context context,long start, long end) {
+        long usage = 0L;
+
+        NetworkStats networkStatsByApp;
+        NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
+
+        try {
+            networkStatsByApp = networkStatsManager.querySummary(ConnectivityManager.TYPE_MOBILE, getSubscriberId(context, ConnectivityManager.TYPE_MOBILE), start, System.currentTimeMillis());
+            do {
+                NetworkStats.Bucket bucket = new NetworkStats.Bucket();
+                networkStatsByApp.getNextBucket(bucket);
+                usage = usage + (bucket.getRxBytes() + bucket.getTxBytes());
+            } while (networkStatsByApp.hasNextBucket());
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        return usage;
+
+    }
+
     public long getPackageRxBytesWifi() {
         NetworkStats networkStats = null;
         try {
@@ -252,6 +273,8 @@ public class NetworkStatsHelper {
         networkStats.getNextBucket(bucket);
         return bucket.getTxBytes();
     }
+
+
 
     private String getSubscriberId(Context context, int networkType) {
         if (ConnectivityManager.TYPE_MOBILE == networkType) {
